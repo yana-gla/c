@@ -1,23 +1,29 @@
 #include <stdio.h>
 
-size_t StrLen(char *str)
+size_t StrLen(const char *str)
 {
-int i = 0;
-	while (str[i] != '\0')
+size_t i = 0;
+assert (NULL != str);
+
+	while ('\0' != str[i])
 	{
-		i++;
+		++i;
 	}
+	
 return i;
 }
 
-int StrCmp(char *str_1, char *str_2)
+int StrCmp(const char *str_1, const char *str_2)
 {
 	int i = 0;
 	
-	while(*str_1 != '\0' && *str_2 != '\0' && *str_1 == *str_2)
+	assert (NULL != str_1);
+	assert (NULL != str_2);
+	
+	while('\0' != *str_1 && '\0' != *str_2 && *str_1 == *str_2)
 	{
-		str_1++;
-		str_2++;
+		++str_1;
+		++str_2;
 	}
 	return *str_1 - *str_2;
 }

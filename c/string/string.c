@@ -57,12 +57,12 @@ int StrCmp(const char *str_1, const char *str_2)
 	assert (NULL != str_1);
 	assert (NULL != str_2);
 	
-	while('\0' != *str_1 && *str_1 == *str_2)
+	while(('\0' != *str_1) && (*str_1 == *str_2))
 	{
 		++str_1;
 		++str_2;
 	}
-	return *str_1 - *str_2;
+	return (*str_1 - *str_2);
 }
 
 /* Reviewed By:  Nitzan Miron (Jan 8, 2025)
@@ -79,8 +79,7 @@ char *StrCpy(char *dst, const char *src)
 	
 	while ('\0' != *src)
 	{
-		*dst = *src; 
-		++dst, ++src;
+		*dst++ = *src++; 
 	}
 	
 	*dst = '\0';
@@ -94,7 +93,7 @@ char *StrCpy(char *dst, const char *src)
  * total are written
  * returns pointer to dest
  */
-
+/*Corrected after code review Jan 10*/
 char *StrNCpy(char *dst, const char *src, size_t dsize)
 {	
 	char *dst_strt = dst;
@@ -102,13 +101,13 @@ char *StrNCpy(char *dst, const char *src, size_t dsize)
 	assert(NULL != dst);
 	assert(NULL != src);
 	
-	while (dsize > 0 && '\0' != *src)
+	while (dsize > 0 && '\0' != *src && '\0' != *dst)
 	{
 	    *dst++ = *src++;
 	    --dsize;
 	}
 	
-	while ('\0' != *dst)
+	while (dsize > 0 && '\0' != *dst)
 	{
 		*dst++ = '\0';
 	}
@@ -130,7 +129,7 @@ int StrNCmp(const char* s1, const char* s2, size_t n)
 	{
 		++s1, ++s2, --n;
 	}
-	return *s1 - *s2;
+	return (0 == n) ? 0 : *s1-*s2;
 }
 
 /* Reviewed By: Nitzan Miron (Jan 8, 2025)
@@ -158,7 +157,7 @@ int StrCaseCmp(const char *str_1, const char *str_2)
  * returns pointer to ocurrence of char if found, else returns NULL
  */
 char *StrChr(const char *s, int c)
-{
+{       
 	assert (NULL != s);
 	
 	while ('\0' !=  *s && *s != c) 
@@ -166,13 +165,13 @@ char *StrChr(const char *s, int c)
 		++s;
 	}
 	
-	return *(s) == c ? s : NULL;
+	return *(s) == c ? (char*)s : NULL;
 }
 
 /* Reviewed By: Nitzan Miron (Jan 8, 2025)
  * returns pointer to a new string which is a duplicate of the given string
  */
-char *StrdUp(const char *s)
+char *StrDup(const char *s)
 {       
 	char *d_s = (char*)malloc(StrLen(s)+1);
 	
@@ -211,14 +210,22 @@ char *StrCat(char *dst, const char *src)
  */
 char *StrNCat(char *dst, const char *src, size_t ssize)
 {
-	int len_dst = StrLen(dst);
+	char *dst_strt = dst;
+	
+	dst += StrLen(dst);
 	
 	assert (NULL != dst);
 	assert (NULL != src);
 	
-	StrNCpy(dst+len_dst, src, ssize);
+	while ('\0' != *src && ssize > 0 )
+	{
+	    *dst++ = *src++;
+	    --ssize;
+	}
 	
-	return dst;
+	*dst = '\0';
+	    
+	return dst_strt;
 }
 
 /* Reviewed By: Nitzan Miron (Jan 8, 2025)
@@ -231,33 +238,33 @@ char *StrStr(const char *haystack, const char *needle)
 	assert(NULL != haystack);
 	assert(NULL != needle);
 	
-	if ('\0' == *needle) return haystack;
+	if ('\0' == *needle) return (char*)haystack;
 	
 	while ('\0' != *haystack && StrNCmp(haystack, needle, StrLen(needle)) != 0 )
 	{
 		++haystack;
 	}
 	
-	return *haystack == '\0' ? NULL : haystack;
+	return *haystack == '\0' ? NULL : (char*)haystack;
 }
 
 /* Reviewed By: 
- * calculates length in bytes of initial segment of string, str, which consists
+ * calculates length in bytes of initial segment of string, s, which consists
  * entirely of bytes in string, accept
  */
 size_t StrSpn(const char *s, const char *accept)
 {
-	size_t i = 0;
+	size_t spn = 0;
 	
 	assert (NULL != s);
 	assert (NULL != accept);
 	
-	while ((*s+1) != '\0' && 0 == StrNCmp(s+i, accept+i, 1))  
+	while (NULL != StrChr(accept,*s) && '\0' != *s)
 	{
-		++i;
+	    ++spn;
+	    ++s;
 	}
-	
-	return i;
+	return spn;
 }
 
 

@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <ctype.h>
 #include <errno.h>
+#include <ctype.h> 
 
 
 size_t StrLen(const char *str)
@@ -34,18 +35,18 @@ int StrCmp(const char *str_1, const char *str_2)
 
 char *strcpy(char *restrict dst, const char *restrict src)
 {
-	size_t i = 0;
+	char *i_dst = dst;
 	
 	assert(NULL != dst);
 	assert(NULL != src);
 	
-	while ('\0' != *(src + i) )
+	while ('\0' != *src)
 	{
-		*(dst + i) = *(src + i); // too many actions because use of i
-		++i;
+		*dst = *src; 
+		++dst, ++src;
 	}
 	
-	*(dst+i) = '\0';
+	*dst = '\0';
 	
 	return dst;
 }
@@ -137,7 +138,7 @@ char *strchr(const char *s, int c)
 char *strdup(const char *s)
 {
 	assert (NULL != s);
-	char *d_s = (char*)malloc(sizeof(s)+1);
+	char *d_s = (char*)malloc(StrLen(s)+1);
 	assert (NULL != d_s);
 	
 	strcpy(d_s, s);
@@ -227,53 +228,51 @@ void BOOM_p(int from, int to)
 }
 
 
-void *ToOneSpace(*char str)
+char *del_white(char *str)
 {
-	char *dst = str;
-	
-	while (' ' == *str && ' ' == *(str+1))
-	{
-		++str;
-	}
-	
-	strcpy(dst+1, str+1);
-}
-		
-char *white_s(*str)
-{
-	assert(NULL != str);
-	
-	size_t right = strlen(str)-1;
-	char* runner = str;
-	
-	//eating initial spaces
-	while (' ' == *str)
-	{
-		++str;
-	}
-	
-	runner = str;
-	
-	//changing middle spaces to one space
-	while ('\0'== *runner)
-	{
-		ToOneSpace(runner);
-		++runner;
-	}
-		
-	//eating final spaces
-	if (' ' == *(runner)) *runner = '\0';
+    char *str_cpy = (char*)malloc(StrLen(str) + 1);
+    char *str_cpy_strt = str_cpy;
 
+    
+    while(' ' == *str && '\0' != *str)
+    {
+        ++str;
+    }
+    
+    str_cpy_strt = 
+    
+    *str_cpy = *str;
+    ++str_cpy;
+    
+    while ('\0' != *(str+1) )
+    {
+        if (*str == ' ' && *(str+1) == ' ')
+        {
+            ++str;
+        }
+        
+        else 
+        {
+            *str_cpy = *str;
+            ++str_cpy;
+            ++str;
+        }
+    }
+    
+    if (*str == ' ')
+    {
+        *str_cpy = '\0';
+    }
+    
+        
+    return cpy_start;
+      
 }
-	
-	
-	
-	
-
 
 int main (void)
 {
-	char str1[7] = "abcde", str2[]= "cd", str3[5] = "poi";
+	int from = 0, to = 20;
+	char str1[20] = "   abc   de", str2[]= "cd", str3[5] = "poi";
 	/*char *str3 = (char*)malloc(sizeof(str1+str2)+1);*/
 	
 	//printf("len of yana is %ld", StrLen(str1));
@@ -282,11 +281,12 @@ int main (void)
 	//printf("%s\n", strcat(str1, str2));
 	//printf("%s\n", strncat(str3, str2, 1));
 	//printf("%s\n", strstr(str1, str2));
-	
 	//printf("%ld\n", strspn(str1, str2));
 	
-	int from = 0, to = 20;
-	BOOM_p(from, to);
+	printf("%s", del_white(str1));
+	
+
+	//BOOM_p(from, to);
 	
 	//strdup
 	//free	

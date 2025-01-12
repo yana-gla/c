@@ -1,9 +1,10 @@
+#include <ctype.h>  
+#include <stdio.h>   
+#include <stdlib.h>                     /* For malloc *//* For tolower function */
 #include <stddef.h>                     /* For size_t type definition */
 #include <assert.h>                     /* For assert macro */
-#include <stdlib.h>                     /* For malloc */
-#include <ctype.h>                      /* For tolower function */
 #include <errno.h>
-#include "string.h"  
+#include <string.h>
 
 int C_Dig(int num)
 {	
@@ -17,7 +18,7 @@ int C_Dig(int num)
 	return 1;
 }
 
-//reverse range and negative
+/*reverse range and negative*/
 void Boom_p(int from, int to)
 {
 
@@ -32,53 +33,10 @@ void Boom_p(int from, int to)
 	printf("\n");
 }
 
-
-char *del_white(char *str)
-{
-    char *str_cpy = (char*)malloc(StrLen(str) + 1);
-    char *str_cpy_strt = str_cpy;
-
-    
-    while(' ' == *str && '\0' != *str)
-    {
-        ++str;
-    }
-    
-    str_cpy_strt = 
-    
-    *str_cpy = *str;
-    ++str_cpy;
-    
-    while ('\0' != *(str+1) )
-    {
-        if (*str == ' ' && *(str+1) == ' ')
-        {
-            ++str;
-        }
-        
-        else 
-        {
-            *str_cpy = *str;
-            ++str_cpy;
-            ++str;
-        }
-    }
-    
-    if (*str == ' ')
-    {
-        *str_cpy = '\0';
-    }
-    
-        
-    return cpy_start;
-      
-}
-
-
 int IsPldrm(const char *str)
 {	
 	int left = 0;
-	int right = StrLen(str) - 1;
+	int right = strlen(str) - 1;
 	
 	while (left < right)
 	{
@@ -91,4 +49,96 @@ int IsPldrm(const char *str)
 		right--;
 	}
 	return 1;
+}
+
+
+char *StrCpy(char *dst, char *src)
+{
+	char *dst_strt = dst;
+	
+	assert(NULL != dst);
+	assert(NULL != src);
+	
+	while ('\0' != *src)
+	{
+		*dst++ = *src++; 
+	}
+	
+	*dst = '\0';
+	
+	return dst_strt;
+}
+
+char *Nxt_Chr (char *str)
+{
+    /*char *start = str;*/
+    while (*str == ' ' )/* (isalpha(*str) == 0 )*/
+    {
+        ++str;
+    }
+    
+    return *str == '\0' ? str-1 : str;
+
+}
+    
+    
+    
+char *DelSpace (char *str)
+{
+    char *cpy = str;
+    char *rnr = str;
+    int fps = 0; /*flag for con space*/
+    
+    assert(NULL != str);
+
+    /*eatint initial spaces*/
+    while (*str == ' ') /*(0 != isspace(*str))*/
+    {
+        ++str;
+    }
+    
+    /*str begining of return string*/
+    cpy = rnr = str;
+    
+    while ('\0' != *rnr)
+    {
+        if (*rnr != ' ')
+        { 
+            ++rnr, ++cpy;
+            fps = 0;
+        }
+        else if (*rnr == ' ' && fps == 0)
+        {   
+            ++rnr, ++cpy;
+            fps = 1;
+        }
+        
+        else if (*rnr == ' ' && fps == 1)
+        {
+            cpy = Nxt_Chr(cpy);
+            rnr = StrCpy(rnr, cpy);
+            ++rnr; 
+            cpy = rnr;
+            fps = 0;
+        }
+    }
+
+    /*eating final space*/
+   while (*(rnr-1) == ' ' )
+    {
+        *(rnr-1) = '\0';
+        --rnr;
+    }
+    
+    return str;
+}
+
+int main (void)
+{
+    char str[] = "  ya      na   Gla    zer   ";
+    /*printf("%s", str);*/
+    
+    printf("del space is |%s|\n", DelSpace(str));
+  
+    return 0;
 }

@@ -17,7 +17,7 @@ char *StrNCpy(char *dst, const char *src, size_t dsize);
 int StrNCmp(const char* s1, const char* s2, size_t n);
 int StrCaseCmp(const char *str_1, const char *str_2);
 char *StrChr(const char *s, int c);
-char *StrdUp(const char *s);
+char *StrDup(const char *s);
 char *StrCat(char *dst, const char *src);
 char *StrNCat(char *dst, const char *src, size_t ssize);
 char *StrStr(const char *haystack, const char *needle);

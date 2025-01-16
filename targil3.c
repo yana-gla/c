@@ -22,13 +22,13 @@ int main (void)
 		return 0;
 	}
 	
-	//printf ("pointer of arr_mlc before free is %p\n", arr_mlc);
+	/*printf ("pointer of arr_mlc before free is %p\n", arr_mlc);*/
 	
 	if (*arr_mlc == 0) printf ("Yana\n");
 	
 	free(arr_mlc);
 	
-	/* *arr_mlc = 8;
+	/* *arr_mlc = 8;*/
 	
 	/*
 	int *pn = &n;
@@ -44,9 +44,9 @@ int main (void)
 	*/
 	
 	int arr[10] = {0};
-	//printf ("11'th member in the array is %d", arr_10[10]);
+	/*printf ("11'th member in the array is %d", arr_10[10]);*/
 	
-	//arr[10] = 9;
+	/*arr[10] = 9;*/
 	
 	return 0;	
 

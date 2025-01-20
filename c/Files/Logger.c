@@ -10,14 +10,13 @@ typedef struct{
 	int (*op_func)(const char *filename, const char *input);
 }str_op_t;
 	
-enum file_op{DEFAULT, REMOVE, COUNT, EXIT, BEGIN, SIZE};
+enum file_op {DEFAULT, REMOVE, COUNT, EXIT, BEGIN, SIZE};
 	
 
 /*Compare Function For AddBegining*/
 int CmpBgn(const char *input, const char *cmm_str)
 {
-    (void) cmm_str;
-    return *input == *cmm_str ? (0) : (1);
+    return (*input == *cmm_str) ? (0) : (1);
 }
 
 /*Compare Append- accept every string*/
@@ -28,9 +27,8 @@ int CmpApnd(const char *input, const char *cmm_str)
     return (0);
 }
 
-
 /*Remove Function*/
-int RmvFnct(const char *filename, const char *input)
+int RmvFile(const char *filename, const char *input)
 {
 	(void) input;
 	if (0 != remove(filename))
@@ -41,7 +39,7 @@ int RmvFnct(const char *filename, const char *input)
 }
 
 /*Exit Function*/
-int ExtFnct(const char *filename, const char *input)
+int Exit(const char *filename, const char *input)
 {
 	(void) filename;
 	(void) input;
@@ -49,12 +47,12 @@ int ExtFnct(const char *filename, const char *input)
 }
 
 /*Count Function*/
-int CntFnct(const char *filename, const char *input)
+int CntLines(const char *filename, const char *input)
 {
 	size_t num_lns = 0;
 	FILE* fp = fopen(filename, "r");
 	char *tmp = (char*)calloc(MAX_LIMIT, sizeof(char));
-	if (0 == tmp) return -1;
+	if (NULL == tmp) return -1;
 	
 	(void) input;
 	
@@ -71,23 +69,24 @@ int CntFnct(const char *filename, const char *input)
 }
 
 
-/*Default Function*/
+/*Add To Beginig Function*/
 int AddBegin(const char *filename, const char *input)
 {
     char buffer[MAX_LIMIT]= "";
-    FILE *fpt = NULL;
-    FILE *fpt_tmp = NULL;
+    FILE *fpt = NULL; /*the original file*/
+    FILE *fpt_tmp = NULL; /*new tmp file*/
      
     fpt = fopen(filename, "r");
         if (NULL == fpt) return -1;
     fpt_tmp = fopen("tmp.txt", "w+");
         if (NULL == fpt_tmp) return -1;
         
-    if (EOF == fputs(input+1, fpt_tmp)) return -1;
+    if (EOF == fputs(input+1, fpt_tmp)) return -1; /*skips the first because it <*/
+    if (EOF == fputs("\n", fpt_tmp)) return -1; /*new line*/
     
-    while (NULL != fgets(buffer, MAX_LIMIT, fpt))
+    while (NULL != fgets(buffer, MAX_LIMIT, fpt)) /*reading from origin*/
     { 
-      if (EOF == fputs(buffer, fpt_tmp)) return -1;
+      if (EOF == fputs(buffer, fpt_tmp)) return -1; /*and copy to temp*/
     }
     
     fclose(fpt);
@@ -108,20 +107,17 @@ int ApndFnct(const char *file_name,const  char *str_input)
 	if (NULL == file)
 	{ 
 		printf("Error opening file");
-		return -1;
 	}
 	
 	if (EOF == fputs(str_input, file))
 	{	
 		printf("Error writng to file");
-		return -1;
 	}
 	fputs("\n", file);
 	
 	if(EOF == fclose(file))
 	{
 		printf("Error closing");
-		return -1;
 	}
 	
 	return(DEFAULT);
@@ -129,16 +125,16 @@ int ApndFnct(const char *file_name,const  char *str_input)
 
 int main(int argc, char** argv)
 {
-	size_t i = 0;
+	int i = 0;
 	char *file_name = argv[1];
-	int num_opr = 0;
+	int num_opr = DEFAULT;
 	char str_input[MAX_LIMIT] = "";
 	str_op_t arr_op[SIZE] = 
-		{ {"-remove", strcmp, RmvFnct},
-		  {"-count",strcmp,CntFnct}, 
-	   	  {"-exit",strcmp,ExtFnct},
+		{ {"-remove", strcmp, RmvFile},
+		  {"-count",strcmp,CntLines}, 
+	   	  {"-exit",strcmp,Exit},
 		  {"<", CmpBgn, AddBegin},
-		  {"",CmpApnd, ApndFnct}, };
+		  {"",CmpApnd, ApndFnct} };
 		
 	(void) argc;
 	
@@ -146,9 +142,9 @@ int main(int argc, char** argv)
 	
 	while(num_opr != EXIT)
 	{
-                /*fgets(str_input, MAX_LIMIT, stdin);*/
-		scanf("%s",str_input); /*%[^\n]s*/
-		/*ApndFnct(file_name, str_input);*/
+		scanf("%99[^\n]", str_input);  /*Reads max 99 chars*/
+		getchar(); /* Consume the newline */                              
+
 		for(i = 0 ; i < SIZE ; ++i)
 		{
 			if (0 == arr_op[i].cmp_fnc(arr_op[i].cmmnd, str_input))
@@ -157,7 +153,6 @@ int main(int argc, char** argv)
 				break;	
 			}
 		}
-		
 	}
 	
 	return 0;	

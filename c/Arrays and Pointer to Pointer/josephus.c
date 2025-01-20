@@ -7,8 +7,10 @@ int josephus_n(int arr[], int n)
 	/*solution according to recrusive formula*/
 	/*W = (W(n-1)+2) mod n;*/
 	
-	size_t winner = 0; 
-	size_t i = 1;
+	int winner = 0; 
+	int i = 1;
+	
+	(void)arr;
 	
 	while (i <= n)
 	{
@@ -20,12 +22,12 @@ int josephus_n(int arr[], int n)
 }
 
 
-int josephus_n2(int arr[], int n) /*size t*/
+int josephus_n2(int arr[], int n) 
 {
-	size_t i = 0;
+	int i = 0;
 	arr[n-1] = 0;
 	
-	for ( i ; i < n-1 ; ++i)
+	for (  ; i < n-1 ; ++i)
 	{
 		arr[i] = i+1;
 	}
@@ -38,7 +40,7 @@ int josephus_n2(int arr[], int n) /*size t*/
 		i = arr[i];
 	}
 	
-	return (i + 1);
+	return (i);
 }
 	
 	
@@ -79,7 +81,7 @@ int josephus_n_logn(int arr[], int n)
 
 int main(void)
 {
-	 	/*0 is an alive solider*/
+	 	/*0 is alive solider*/
 		int arr[5] = {0};
 		
 		printf("winner nlogn solution %d\n", josephus_n_logn(arr, 5));

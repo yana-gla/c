@@ -25,7 +25,7 @@ int IsPow2Lp(unsigned int n)
 int IsPow2WLp(unsigned int n)
 {
     /*without loop*/
-    return (n != 0 && ((n-1) & n) == 0);
+    return (0 != n && (0 == (n-1) & n));
 }  
 
 int Ads1(int num)
@@ -33,9 +33,9 @@ int Ads1(int num)
     /*Will Check carry each bit using mask*/
     int mask = 1;
     
-    while ((mask & num) == 1) /*means there is carry, result this bit turn 0*/
+    while (1 == (mask & num)) /*means there is carry, result this bit turn 0*/
     {
-        num = num ^ mask; /*xor suits for adding*/
+        num =  mask ^ num; /*xor suits for adding*/
         mask <<= 1; /*check next bit*/
     }
     
@@ -110,7 +110,6 @@ int Chk1_26Bit(uchar_t num)
     return !!(num & mask);
 }
 
-
 uchar_t Swap_35Bit1(uchar_t num)
 {
     /*Extract 3, 5 bit*/
@@ -150,7 +149,7 @@ uchar_t Swap_35Bit2(uchar_t num)
 /*All 16 Divisable number ending with 0000*/ 
 unsigned int Clsst16(const unsigned int num)
 {
-    unsigned int mask = ~0xF; /*Equal to 1111 0000 0000 ... its an int, not char*/
+    unsigned int mask = ~0xF; /*Equal to 1111 1111 ... 0000  its an int, not char*/
     return (num & mask);
 }
 
@@ -207,10 +206,10 @@ void PrntFltBts2(float *fp)
     unsigned int* ip = (unsigned int*)fp;
     unsigned int bits = *ip; /*the value*/
 
-    for (; i < 32; ++i)
+    for (i = 31 ; 0 <= i; --i)
     {
         printf("%d", (bits >> i) & 1);
-        printf ("y");
+
     }
     printf("\n");
 }

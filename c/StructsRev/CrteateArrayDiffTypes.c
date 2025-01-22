@@ -3,19 +3,19 @@
 #include <stdlib.h>
 
 #define ARR_LEN 3
-#define MAX_SIZE_STR 100
+#define MAX_SIZE_STR 100 /*fix*/
 
 typedef enum {
-			INT,       /* =0 */
+			INT,       /* =0 */ /*fix*/
 			FLT,      /* =1 */
 			STR,     /* =2 */
 			FUTURE  /* =3 */
 } DataType_t;
 
-enum State {SUCCESS, FAIL};
+enum State {SUCCESS, FAIL}; /*fix*/
 
 typedef struct {
-	DataType_t type;
+	DataType_t type; /*fix*/
 	void *ptr_data;                 /* like- int*,  ptr to data */
 	void (*p_prnt)(void* element); /*pointer to print function*/
 	void (*p_add)(void* element, int a); /*pointer to add function*/ 
@@ -23,7 +23,7 @@ typedef struct {
 } strct_element_t;               /*general member*/
 
 
-void intToStr(int num, char *str) {
+void intToStr(int num, char *str) {/*sprintf*/
     int i = 0;
     int j = 0;
     char temp = '\0';
@@ -65,7 +65,7 @@ void EmptyFnct(void* ptr_data)
 	
 void PrntInt(void *ptr_data)
 {
-	printf("%d\n", *(int*)ptr_data);
+	printf("%d\n", *(int*)&ptr_data);/*fix*/
 }
 
 void PrntFlt(void *ptr_data)
@@ -97,10 +97,10 @@ void AddStr(void* ptr_data, int num)
 
 void ClnStr(void *data)
 {
-	free(data);
+	free(data);/*fix*/
 }
 
-void InitInt(strct_element_t *ptr_strct, int *pi)
+void InitInt(strct_element_t *ptr_strct, int pi)/*fix pi*/
 {
 	ptr_strct -> type = INT;
 	ptr_strct -> ptr_data = pi;
@@ -133,7 +133,7 @@ void InitStr(strct_element_t *ptr_strct, char *str)
 }
 
 
-void InitArr(strct_element_t *ptr_strct, int *pi, float *pf, char *ps) /*pi = pointer int..*/
+void InitArr(strct_element_t *ptr_strct, int *pi, float *pf, char *ps) /*pi = pointer int..*/ /*init prnt add to test*/
 {	
 	InitInt(&ptr_strct[INT], pi);
 	InitFlt(&ptr_strct[FLT], pf);
@@ -154,7 +154,7 @@ void AddArr(strct_element_t *ptr_strct, int num)
 {
 	int i = 0;
 
-	for ( ; i < ARR_LEN ; ++i)
+	for ( i= 0 ; i < ARR_LEN ; ++i)
 	{
 		ptr_strct[i].p_add(ptr_strct[i].ptr_data ,num);
 	}	

@@ -1,0 +1,15 @@
+# Ignore everything:
+*
+
+# But do not ignore directories (so we can check their contents)
+!*/
+
+# Do not ignore these files:
+!*.c
+!*.h
+!dummy.md
+!*.sh
+!*.bash
+!.gitignore
+
+

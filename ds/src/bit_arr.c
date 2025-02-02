@@ -3,6 +3,9 @@
 #include <assert.h> /*assert*/
 #include "bit_arr.h"
 
+
+/*tabim*/
+
 #define BIT_ARR_BYTES   sizeof(bit_arr_t) /*8*/
 #define NUM_BITS_ARR    BIT_ARR_BYTES * CHAR_BIT /*64*/
 
@@ -28,7 +31,7 @@ static void InitLutMirror()
 	}
 }
 
-static int is_off_lut_mirr()
+static int is_off_lut_mirr() /* FIX */
 {
 	return (!LUT_MRR[1]);
 }
@@ -101,14 +104,14 @@ size_t BitArrCountOnLut(bit_arr_t arr)
 
 bit_arr_t BitArraySetOn(bit_arr_t arr, size_t k)
 {
-	assert (k <= NUM_BITS_ARR);
+	assert (k < NUM_BITS_ARR);
 	
 	return (arr | 1 <<k );
 }
 
 bit_arr_t BitArraySetOff(bit_arr_t arr, size_t k) /*check*/
 {
-	assert (k <= NUM_BITS_ARR);
+	assert (k < NUM_BITS_ARR);
 	
 	return (arr & ~(1 << k));
 }
@@ -128,7 +131,7 @@ bit_arr_t BitArrayResetAll(bit_arr_t bit_arr)
 
 bit_arr_t BitArrSetBit(bit_arr_t bit_arr, size_t k, int val)
 {
-	assert (k <= NUM_BITS_ARR && ((val == 0) | (val == 1)));
+	assert (k < NUM_BITS_ARR && ((val == 0) | (val == 1)));
 	
 	bit_arr &= ~(1 << k);
 	return (bit_arr |= val << k) ;
@@ -136,7 +139,7 @@ bit_arr_t BitArrSetBit(bit_arr_t bit_arr, size_t k, int val)
 
 int BitArrGetVal(bit_arr_t bit_arr, size_t k)
 {
-	assert (k <= NUM_BITS_ARR);
+	assert (k < NUM_BITS_ARR);
 	
 	return ((bit_arr >> k) & 1);
 
@@ -144,7 +147,7 @@ int BitArrGetVal(bit_arr_t bit_arr, size_t k)
 
 bit_arr_t BitArrFlip(bit_arr_t bit_arr, size_t k)
 {
-	assert (k <= NUM_BITS_ARR);
+	assert (k < NUM_BITS_ARR);
 	
 	return (bit_arr ^ (1 << k));
 }
@@ -221,27 +224,27 @@ size_t BitArrCountOn64(bit_arr_t arr)
 
 size_t BitArrCountOff(bit_arr_t arr)
 {
-	return (NUM_BITS_ARR - BitArrCountOn(arr));
+    return (NUM_BITS_ARR - BitArrCountOn(arr));
 }
 
 char *BitArrayToString(const bit_arr_t arr, char *buffer)
 {
 
-	int i = NUM_BITS_ARR - 1;
-	bit_arr_t bit = 0;
-	char *buffer_start = buffer;
-	
-	assert(buffer != NULL);
-	
-	for (i = i ; i >= 0; --i)
-	{
-			bit = ((arr>>i) & 1);
-			*buffer++ = bit + '0';
-	}
-	
-	*buffer = '\0';
-	
-	return (buffer_start);
+    int i = NUM_BITS_ARR - 1;
+    bit_arr_t bit = 0;
+    char *buffer_start = buffer;
+
+    assert(buffer != NULL);
+
+    for (i = i ; i >= 0; --i)
+    {
+        bit = ((arr>>i) & 1);
+        *buffer++ = bit + '0';
+    }
+
+    *buffer = '\0';
+
+    return (buffer_start);
 }
 
 

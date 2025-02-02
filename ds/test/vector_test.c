@@ -9,6 +9,8 @@ int main()
 	int *idx = NULL;
 	int data1 = 199, data2 = 299;
 	
+	
+	
 
 	vector_t *vec = VectorCreate(element_size, capacity);
 	printf("Vector created..\n");
@@ -16,21 +18,24 @@ int main()
 	printf("size is %lu\n", VectorSize(vec));
 	printf("capacity is %lu\n\n", VectorCapacity(vec));
 	
-	idx = VectorAccessElement(vec, 1);
+	/*idx = VectorAccessElement(vec, 1);
 	*idx = 27;
 	printf("%d\n", *(int*)VectorAccessElement(vec, 1));
 	*(int*)VectorAccessElement(vec, 2) = 3;
 	printf("%d\n", *(int*)VectorAccessElement(vec, 2));
-	printf("%d\n\n", *(int*)VectorAccessElement(vec, 15));
+	printf("%d\n\n", *(int*)VectorAccessElement(vec, 6));*/
 	
 	printf("size is %lu\n\n", VectorSize(vec));
 	
 	printf("Psuback command #1..\n");
 	VectorPushBack(vec, &data1);
 	printf("size is %lu\n", VectorSize(vec));
+	printf("%d\n", *(int*)VectorAccessElement(vec, 0));
 	printf("Psuback command #2..\n");
 	VectorPushBack(vec, &data2);
 	printf("size is %lu\n", VectorSize(vec));
+	
+	
 	printf("Popback command..\n");
 	VectorPopBack(vec);
 	printf("size is %lu\n\n", VectorSize(vec));
@@ -48,11 +53,7 @@ int main()
 	
 	/*printf("Capacity is %lu\n\n", VectorCapacity(vec));*/
 	
-	
-	
-	
-	
-	
+
 	
 	
 	

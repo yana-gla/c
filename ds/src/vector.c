@@ -1,3 +1,6 @@
+/*Reviewd by Omri 02/02/2025*/
+
+
 #include <stdlib.h>/*malloc etc.*/
 #include <stdio.h> /*printf*/
 #include <string.h>/*memcpy*/
@@ -6,6 +9,8 @@
 
 #define GROWTH_FACTOR 2
 #define SHRINK_FACTOR 0.5
+#define MIN_CAPACITY 8
+#define MAX(a, b) ((a > b) ? a : b)
 
 struct vector
 {
@@ -18,18 +23,27 @@ struct vector
 /* Allocating memory for vector type and vector data*/
 vector_t* VectorCreate(size_t element_size, size_t capacity)
 {
-	vector_t *p_vector = (vector_t*)calloc(1, sizeof(vector_t));
-	p_vector->head_vector = (void*)calloc(capacity * GROWTH_FACTOR, element_size);
-	
-	if (p_vector == NULL || p_vector->head_vector == NULL)
+	vector_t *p_vector = (vector_t*) malloc(sizeof(vector_t));
+	if (NULL == p_vector)
 	{
+		printf("Allocation Failed.\n");
+		return NULL;
+	}
+	
+	capacity = MAX(MIN_CAPACITY, capacity);
+	
+	p_vector->head_vector = (void*)malloc(capacity * element_size);
+	
+	if (NULL == p_vector->head_vector)
+	{
+		free (p_vector);
 		printf("Allocation Failed.\n");
 		return NULL;
 	}
 	
 	p_vector->element_size = element_size;
 	p_vector->size = 0;
-	p_vector->capacity = capacity * GROWTH_FACTOR;
+	p_vector->capacity = capacity;
 	
 	return (p_vector);
 }
@@ -47,21 +61,35 @@ void VectorDestroy(vector_t* vector)
 }
 
 /*Returning pointer of the element in given index of the vector*/
-/*does'nt increase size!*/
+/*Does'nt increase size*/
 void* VectorAccessElement(const vector_t* vector, size_t index)
 {
-	assert(NULL != vector && index < vector->capacity);
+	assert(NULL != vector && index < vector->size);
 	
-	return ((char*)vector->head_vector + index * vector->element_size);
+	return ((char*)vector->head_vector + (index * vector->element_size));
 }
+
 
 int VectorPushBack(vector_t* vector, const void* data)
 {
+	/*void *tmp_head = NULL;*/
+	
 	assert(NULL != vector && NULL != data);
 	
 	if (vector->size == vector->capacity)
 	{
-		if (1 == VectorReserve(vector, GROWTH_FACTOR * vector->capacity))
+		/*vector->capacity = GROWTH_FACTOR * vector->capacity;
+		tmp_head = (void*)realloc(vector->head_vector, vector->capacity * vector->size);
+		
+		if (NULL == tmp_head)
+		{
+			printf("Reallocation Failed.\n");
+			return 1;
+		}
+		vector->head_vector = tmp_head;
+		*/
+		
+		if (2 == VectorReserve(vector, GROWTH_FACTOR * vector->capacity))
 		{
 			return 1;
 		}
@@ -71,7 +99,7 @@ int VectorPushBack(vector_t* vector, const void* data)
 			data, vector->element_size);
 			
 	++vector->size;
-			
+	
 	return 0;
 }
 
@@ -79,7 +107,18 @@ int VectorPushBack(vector_t* vector, const void* data)
 void VectorPopBack(vector_t* vector)
 {
 	assert(NULL != vector && vector->size > 0);
+	
 	--vector->size;
+	
+	if (vector->size / vector->capacity < SHRINK_FACTOR)
+	{
+		if (2 == VectorShrink(vector))
+		{
+			return ;
+		}
+	}
+	
+	return;
 }
 
 /*Returns the capacity of the vector*/
@@ -100,17 +139,19 @@ size_t VectorSize(const vector_t* vector)
 /*Return value- capacity increased = 0, not = 1, allocation problem = 2*/
 int VectorReserve(vector_t* vector, size_t new_capacity)
 {
+	void *temp_head = NULL;
 	assert(NULL != vector);
 	
 	if (new_capacity > vector->capacity)
 	{
-		vector->head_vector = (void*)realloc(vector->head_vector, new_capacity*vector->element_size);
+		temp_head = (void*)realloc(vector->head_vector, new_capacity * vector->element_size);
 		
-		if (NULL == vector->head_vector)
+		if (NULL == temp_head)
 		{
 			printf("Reallocation Failed.\n");
 			return 2;
 		}
+		vector->head_vector = temp_head;
 		
 		vector->capacity = new_capacity;
 		return 0;
@@ -121,15 +162,26 @@ int VectorReserve(vector_t* vector, size_t new_capacity)
 
 
 /*If vector size is less than shrink factor capacity, shrink capacity*/
-/* 1 - Not shrinked, 0- Shrinked*/
+/*0- Shrinked,  1 - Not shrinked, , 2- realocation failed*/
 
 int VectorShrink(vector_t* vector)
 {
+	void *temp_head = NULL;
+	size_t new_capacity = MAX(vector->size * GROWTH_FACTOR, MIN_CAPACITY);
+	
 	assert(NULL != vector);
 	
-	if ((vector->size / vector->capacity) < SHRINK_FACTOR)
+	if (new_capacity < vector->capacity)
 	{
-		vector->capacity *= SHRINK_FACTOR;
+		temp_head = (void*)realloc(vector->head_vector, new_capacity * vector->element_size);
+		if (NULL == temp_head)
+		{
+			printf("Reallocation Failed.\n");
+			return 2;
+		}
+		vector->head_vector = temp_head;
+		
+		vector->capacity = new_capacity;
 		return 0;
 	}
 	

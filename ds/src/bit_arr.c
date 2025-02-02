@@ -4,8 +4,6 @@
 #include "bit_arr.h"
 
 
-/*tabim*/
-
 #define BIT_ARR_BYTES   sizeof(bit_arr_t) /*8*/
 #define NUM_BITS_ARR    BIT_ARR_BYTES * CHAR_BIT /*64*/
 
@@ -31,18 +29,19 @@ static void InitLutMirror()
 	}
 }
 
-static int is_off_lut_mirr() /* FIX */
+/*
+static int is_off_lut_mirr()
 {
 	return (!LUT_MRR[1]);
 }
-
+*/
 
 bit_arr_t BitArrayMirrorLut(bit_arr_t arr)
 {
 	size_t i = 0;
 	bit_arr_t result = 0;
 	
-	if (is_off_lut_mirr())
+	if (0 == LUT_MRR[1] )
 	{
 		InitLutMirror();
 	}
@@ -76,16 +75,18 @@ static void InitLutCount()
 	}
 } 
 
+/*
 static int is_off_lut_count()
 {
 	return (!LUT_CNT[1]) ;
 }
+*/
 
 size_t BitArrCountOnLut(bit_arr_t arr)
 {
 	size_t num_on = 0;
 	
-	if (is_off_lut_count())
+	if (0 == LUT_CNT[1])
 	{
 		InitLutCount();
 	}
@@ -97,9 +98,6 @@ size_t BitArrCountOnLut(bit_arr_t arr)
 	
 	return (num_on);
 }
-
-
-
 
 
 bit_arr_t BitArraySetOn(bit_arr_t arr, size_t k)

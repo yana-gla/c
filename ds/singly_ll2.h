@@ -1,7 +1,7 @@
 #include <stddef.h>		/* for size_t */
 
-typedef struct node node_t;
-typedef struct slist slist_t;
+typedef struct node_t node_t;
+typedef struct slist_t slist_t;
 typedef struct node_t* slist_itr_t;
 
 typedef int(*match_func_t) (void*, void*);

@@ -35,16 +35,13 @@ void QueueDestroy(queue_t* queue)
 	ListDestroy(queue->list);
 	
 	free(queue);
-	queue = NULL;
 }
 
 int QueueEnqueue(queue_t* queue, void* data)
-{
-	slist_itr_t itr = ListItrEnd(queue->list);
-	
+{	
 	assert(NULL != queue && NULL != data);
 	
-	if (itr != ListInsertBefore(itr, data))          /*check*/
+	if (NULL == ListInsertBefore(ListItrEnd(queue->list), data))        
 	{
 		return 1;
 	}
@@ -54,10 +51,8 @@ int QueueEnqueue(queue_t* queue, void* data)
 
 void QueueDequeue(queue_t* queue)
 {
-	slist_itr_t itr = ListItrBegin(queue->list);
 	assert(NULL != queue);
-	
-	ListRemove(itr);                               /*check return*/
+	ListRemove(ListItrBegin(queue->list));                     
 }
 void* QueuePeek(const queue_t* queue)
 {
@@ -80,7 +75,7 @@ int QueueIsEmpty(const queue_t* queue)
 queue_t* QueueAppend(queue_t* queue_dst, queue_t* queue_src)
 {
 	assert(NULL != queue_dst && NULL != queue_src);
-	ListAppend(queue_dst-> list, queue_src-> list);
+	queue_dst->list = ListAppend(queue_dst-> list, queue_src-> list);
 	return (queue_dst);
 }
 

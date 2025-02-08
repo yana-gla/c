@@ -14,7 +14,7 @@
  *		Daniel Micha	04/02/2025					
  *										
  ******************************************************************************/
-#include <stdlib.h>/*malloc*/
+#include <stdlib.h>   /*malloc*/
 #include <assert.h>  /*assert*/
 #include "singly_ll.h"
 
@@ -27,8 +27,6 @@ struct node /*link list element*/
 	node_t* next; /*ptr to next node*/
 };
 
-/*typedef struct node_t* node_t*;*/
-
 struct slist
 {
 	node_t* head;  /*ptr to head node*/
@@ -37,7 +35,7 @@ struct slist
 
 /******************************************************************************/
 /*Creates list and dummy node tail
-No parameters, returns pointer to list, O(1) */
+ No parameters, returns pointer to list, O(1) */
 slist_t* ListCreate()
 {
 	slist_t *list = (slist_t*)malloc(sizeof(slist_t));
@@ -48,29 +46,13 @@ slist_t* ListCreate()
 		return (NULL);
 	}
 	
-	/*
-	head = (node_t*)malloc(sizeof(node_t));
-	
-	if(NULL == head)
-	{
-		free(list);
-		return NULL;
-	}
-	*/
-	
 	dummy_tail = (node_t*)malloc(sizeof(node_t));
 	
 	if(NULL == dummy_tail)
 	{
 		free(list);
-		/*free(head);*/
 		return (NULL);
 	}
-	
-	/*
-	head->data = NULL;
-	head->next = tail;
-	*/
 	
 	/*Initialize Data tail to ptr to list, next to NULL*/
 	dummy_tail->data = list;
@@ -89,8 +71,8 @@ slist_itr_t ListItrBegin(const slist_t* list)
 {
 	assert(NULL != list);
 	return (NodeToItr(list->head));
-	/*return (list->head->next);*/
 }
+
 /******************************************************************************/
 /*Function gets iterator and returns iterator to next node, O(1)              */
 slist_itr_t ListItrNext(slist_itr_t itr)
@@ -99,25 +81,13 @@ slist_itr_t ListItrNext(slist_itr_t itr)
 	assert(NULL != itr);
 	return (NodeToItr(node->next));
 }
+
 /******************************************************************************/
 /* Function gets pointer to list and returns iterator to Dummy tail*//*fix- UNB?*/
 /*O(1)                                                                        */
 slist_itr_t ListItrEnd(slist_t* list)
 {	
 	assert(NULL != list);
-	/*
-	node_t* itr = NULL;
-	assert(NULL != list);
-	
-	itr = list->head->next;
-	
-	while (itr->next != list->tail)
-	{
-		itr = itr->next;
-	}
-	
-	return (itr);
-	*/
 	return(NodeToItr((list->tail)));
 }
 
@@ -130,6 +100,7 @@ void* ListGetData(slist_itr_t itr)
 	return(ItrToNode(itr)->data);
 }
 
+/******************************************************************************/
 /*Function gets iterator and pointer to data,
   Sets data in the current node*/
 void ListSetData(slist_itr_t itr, const void* data)
@@ -139,15 +110,15 @@ void ListSetData(slist_itr_t itr, const void* data)
 	node->data = (void*)data;
 }
 
-
+/******************************************************************************/
 /*Function gets 2 iterators, Returns 1 if they Equal, 0 if Not Equal*/
 int ListItrIsEqual(slist_itr_t itr1, slist_itr_t itr2)
 {
 	assert(NULL != itr1 && NULL != itr2);
-	
 	return (itr1 == itr2); 
 }
 
+/******************************************************************************/
 /*Function gets iterator and data, inserts new node (with new data) before given*/ 
 /*itr. Returns Same Iterator (new node)                                       */
 /*O(1)                                                                        */
@@ -173,7 +144,6 @@ slist_itr_t ListInsertBefore(slist_itr_t itr, const void* data)
 	
 	/*updating new data in current node*/
 	node_itr->data = (void*)data;
-	/*ListSetData(itr, data);*/
 	
 	/*updating next field in current node to new node*/
 	node_itr->next = node_in;
@@ -189,7 +159,7 @@ slist_itr_t ListInsertBefore(slist_itr_t itr, const void* data)
 	return (itr);
 }
 
-
+/******************************************************************************/
 /*Function gets itr and removes its node, Returns same itr (different node)   */
 /*O(1)                                                                        */ 
 /*User can remove dummy tail, leads to UB                                     */
@@ -213,24 +183,15 @@ slist_itr_t ListRemove(slist_itr_t itr)
 	return(itr);
 }
 
-static int count_fun(void* data, void* counter)
-{
-	assert (NULL != counter);
-	++*(size_t*)counter;
-	return 0;
-	(void)data;
-}
-
+/******************************************************************************/
 size_t ListCount(const slist_t* list)
 {
 	size_t counter = 0;
-	
-	
 	ListForEach(ListItrBegin(list), ListItrEnd((slist_t*)list), count_fun, &counter);
-	
 	return (counter);
 }
 
+/******************************************************************************/
 /*Count number of elements
 size_t ListCount(const slist_t* list)
 {
@@ -252,6 +213,7 @@ size_t ListCount(const slist_t* list)
 }
 */
 
+/******************************************************************************/
 /*Function receives list and returns 1 if it empty, 0 if not empty*/
 /*O(1)*/
 int ListIsEmpty(slist_t* list)
@@ -260,6 +222,7 @@ int ListIsEmpty(slist_t* list)
 	return(list->head == list->tail);
 }
 
+/******************************************************************************/
 /*Function gets list and delets here (freeing memory*/
 /*O(1)*/
 void ListDestroy(slist_t* list)
@@ -280,15 +243,14 @@ void ListDestroy(slist_t* list)
 	free(list);
 }
 
+/******************************************************************************/
 /*Function gets iterator from and to, match func and data                     */
 /*If there is a match returns iterator to node, else return to                */
 /*O(1)                                                                        */
 slist_itr_t ListFind(slist_itr_t from, slist_itr_t to, match_func_t is_match, const void* data)
 {
 	assert(NULL != is_match && NULL != data);
-	
-	/*typedef int(*match_func_t) (void*, void*);*/
-	
+		
 	while (0 == ListItrIsEqual(from, to) && 0 == is_match(ListGetData(from), (void*)data))
 	{
 		from = ListItrNext(from);
@@ -297,8 +259,7 @@ slist_itr_t ListFind(slist_itr_t from, slist_itr_t to, match_func_t is_match, co
 	return ( (is_match(ListGetData(from), (void*)data)) ? from : to);
 }
 
-/*typedef int(*action_func_t) (void*, void*); */
-
+/******************************************************************************/
 /*Function gets iterator from and to, action func and a parameter             */
 /*returns Status of action func                                               */
 int ListForEach(slist_itr_t from, slist_itr_t to, action_func_t action_func,
@@ -317,6 +278,7 @@ int ListForEach(slist_itr_t from, slist_itr_t to, action_func_t action_func,
 	return (status);
 }
 
+/******************************************************************************/
 /*Appends src list to end of dest list*/
 slist_t* ListAppend(slist_t* dest_list, slist_t* src_list)
 {
@@ -338,16 +300,28 @@ slist_t* ListAppend(slist_t* dest_list, slist_t* src_list)
 	return (dest_list);
 }
 
+/******************************************************************************/
 /*Static function                                                             */
+static int count_fun(void* data, void* counter)
+{
+	assert (NULL != counter);
+	++*(size_t*)counter;
+	return 0;
+	(void)data;
+}
 
+/******************************************************************************/
 static slist_itr_t NodeToItr(node_t* node)
 {
 	assert(NULL != node);
 	return ((slist_itr_t)node);
 }
 
+/******************************************************************************/
 static node_t* ItrToNode(slist_itr_t itr)
 {
 	assert(NULL != itr);
 	return ((node_t*)itr);
 }
+/******************************************************************************/
+

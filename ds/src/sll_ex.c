@@ -43,10 +43,11 @@ typedef struct node
 /*Revers the order of a given slist*/
 node_t *Flip(node_t *head)
 {
-	
 	node_t *prev = NULL;
 	node_t *curr = head;
 	node_t *next = head->next;
+	
+	assert(NULL != head);
 	
 	head->next = prev;
 	
@@ -64,14 +65,16 @@ node_t *Flip(node_t *head)
 
 /******************************************************************************/
 /*Tells whether a given slist has a loop
- slow pointer- advance one position, fast pointer- advance two position
- starting position- slow=head, fast= head->next
- if linked list has a loop, they will meet (equal)
- x + (1-2) in every loop the gap closing by -1.
+ slow pointer- advance one position, fast pointer- advance two positions.
+ starting position- slow = head, fast = head->next.
+ if linked list has a loop, they will meet (pointer will be equal).
+ It occurs because x + (1-2) in every loop the gap closing by -1.
  if fast pointer reaches NULL there isn't a loop                              */
 int HasLoop(const node_t *head)
 {
 	const node_t *slow = head, *fast = head->next;
+	
+	assert(NULL != head);
 	
 	while ((slow != fast) && (NULL != fast) && (NULL != fast->next))
 	{
@@ -94,13 +97,8 @@ node_t *FindIntersection(node_t *head_1, node_t *head_2)
 {
 	node_t *ptr1 = head_1;
 	node_t *ptr2 = head_2;
-	/*
-	if(NULL == head_1 || NULL == head_2)
-	{
-		return NULL;
-	}
-	*/
 	
+	assert(NULL != head_1 && NULL != head_2);
 	
 	while (ptr1 != ptr2)
 	{

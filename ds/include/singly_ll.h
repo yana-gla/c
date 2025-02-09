@@ -1,5 +1,8 @@
 #include <stddef.h>		/* for size_t */
 
+#ifndef __SINGLY_LL_H__
+#define __SINGLY_LL_H__
+
 typedef struct node node_t;
 typedef struct slist slist_t;
 typedef struct node_t* slist_itr_t;
@@ -28,3 +31,5 @@ slist_t* ListAppend(slist_t* dest_list, slist_t* src_list);
 
 slist_itr_t ListFind(slist_itr_t from, slist_itr_t to, match_func_t is_match, const void* data);/**/
 int ListForEach(slist_itr_t from, slist_itr_t to, action_func_t action_func, const void* param);
+
+#endif /* SINGLY_LL_H */

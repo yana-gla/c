@@ -20,6 +20,7 @@
 
 static slist_itr_t NodeToItr(node_t* node);
 static node_t* ItrToNode(slist_itr_t itr);
+static int count_fun(void* data, void* counter);
 
 struct node /*link list element*/
 {

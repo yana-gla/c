@@ -1,5 +1,8 @@
 typedef struct Queue queue_t;
 
+#ifndef __QUEUE_H__
+#define __QUEUE_H__
+
 queue_t* QueueCreate(); 
 void QueueDestroy(queue_t* queue);
 int QueueEnqueue(queue_t* queue, void* data);
@@ -9,6 +12,8 @@ void* QueuePeek(const queue_t* queue);
 size_t QueueSize(const queue_t* queue);
 int QueueIsEmpty(const queue_t* queue);
 queue_t* QueueAppend(queue_t* queue_dst, queue_t* queue_src);
+
+#endif /*QUEUE_H*/
 
 
 

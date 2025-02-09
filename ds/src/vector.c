@@ -1,5 +1,5 @@
-/*Reviewd by Omri 02/02/2025*/
-
+/*Changed after Reviewd by Omri 02/02/2025*/
+/*Changed after mentors review  08/02/2025*/
 
 #include <stdlib.h>/*malloc etc.*/
 #include <stdio.h> /*printf*/
@@ -15,7 +15,7 @@
 struct vector
 {
 	size_t element_size;
-	size_t size; /*current size*/
+	size_t size;        /*current size*/
 	size_t capacity;
 	void *head_vector;
 };
@@ -23,21 +23,19 @@ struct vector
 /* Allocating memory for vector type and vector data*/
 vector_t* VectorCreate(size_t element_size, size_t capacity)
 {
-	vector_t *p_vector = (vector_t*) malloc(sizeof(vector_t));
+	vector_t *p_vector = (vector_t*)malloc(sizeof(vector_t));
 	if (NULL == p_vector)
 	{
-		printf("Allocation Failed.\n");
 		return NULL;
 	}
 	
 	capacity = MAX(MIN_CAPACITY, capacity);
 	
-	p_vector->head_vector = (void*)malloc(capacity * element_size);
+	p_vector->head_vector = (void*)calloc(capacity, element_size);
 	
 	if (NULL == p_vector->head_vector)
 	{
 		free (p_vector);
-		printf("Allocation Failed.\n");
 		return NULL;
 	}
 	
@@ -45,7 +43,7 @@ vector_t* VectorCreate(size_t element_size, size_t capacity)
 	p_vector->size = 0;
 	p_vector->capacity = capacity;
 	
-	return (p_vector);
+	return p_vector;
 }
 
 /*Freeing memory*/
@@ -56,8 +54,9 @@ void VectorDestroy(vector_t* vector)
 	free(vector->head_vector);
 	vector->head_vector = NULL;
 	
+	memset(vector, 0, sizeof(*vector));
+
 	free(vector);
-	vector = NULL;
 }
 
 /*Returning pointer of the element in given index of the vector*/
@@ -69,7 +68,7 @@ void* VectorAccessElement(const vector_t* vector, size_t index)
 	return ((char*)vector->head_vector + (index * vector->element_size));
 }
 
-
+/*0- Pushed, 1 - allocation failed */
 int VectorPushBack(vector_t* vector, const void* data)
 {
 	/*void *tmp_head = NULL;*/
@@ -78,17 +77,6 @@ int VectorPushBack(vector_t* vector, const void* data)
 	
 	if (vector->size == vector->capacity)
 	{
-		/*vector->capacity = GROWTH_FACTOR * vector->capacity;
-		tmp_head = (void*)realloc(vector->head_vector, vector->capacity * vector->size);
-		
-		if (NULL == tmp_head)
-		{
-			printf("Reallocation Failed.\n");
-			return 1;
-		}
-		vector->head_vector = tmp_head;
-		*/
-		
 		if (2 == VectorReserve(vector, GROWTH_FACTOR * vector->capacity))
 		{
 			return 1;
@@ -135,8 +123,9 @@ size_t VectorSize(const vector_t* vector)
 	return (vector->size);
 }
 
-/*Increase capacity of vector to new_capacity if it bigger then current capacity*/
-/*Return value- capacity increased = 0, not = 1, allocation problem = 2*/
+/*Increase capacity of vector to new_capacity if it bigger than the current
+  capacity of the vector.
+  Return value- capacity increased = 0, not = 1, allocation problem = 2*/
 int VectorReserve(vector_t* vector, size_t new_capacity)
 {
 	void *temp_head = NULL;
@@ -148,7 +137,6 @@ int VectorReserve(vector_t* vector, size_t new_capacity)
 		
 		if (NULL == temp_head)
 		{
-			printf("Reallocation Failed.\n");
 			return 2;
 		}
 		vector->head_vector = temp_head;
@@ -176,11 +164,9 @@ int VectorShrink(vector_t* vector)
 		temp_head = (void*)realloc(vector->head_vector, new_capacity * vector->element_size);
 		if (NULL == temp_head)
 		{
-			printf("Reallocation Failed.\n");
 			return 2;
 		}
 		vector->head_vector = temp_head;
-		
 		vector->capacity = new_capacity;
 		return 0;
 	}

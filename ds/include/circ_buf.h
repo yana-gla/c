@@ -1,8 +1,11 @@
+#ifndef __CIRC_BUF_H__
+#define __CIRC_BUF_H__
+ 
  #include <sys/types.h>
  #include <stdio.h>
-
-
+ 
 typedef struct circ_buf circ_buf_t;
+
 
 
 circ_buf_t* BufCreate(size_t capacity);
@@ -25,16 +28,6 @@ ssize_t BufRead(circ_buf_t* buf, char* dst, size_t n_bytes);
 ssize_t BufWrite(circ_buf_t* buf, const char* src, size_t n_bytes);
 
 
-/********************************** NOTES **********************************/
-/*
-*the flexible array MUST BE the last element in the struct.
+#endif /*CIRC_BUF_H */
 
-*allocate memory only once (calloc for the struct, according to offset)
-	
-*malloc + memset VS calloc:
-	- calloc set element to 0 when memory accessed
-	- memset sets initializes memory on the spot
-	< we use calloc because it's easier for now >
-	
-	*/
-	
+

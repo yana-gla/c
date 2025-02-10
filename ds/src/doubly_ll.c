@@ -261,7 +261,7 @@ int DLLMultiFind(dlist_itr_t from, dlist_itr_t to, match_func_t is_match,
 	{
 		if (is_match(DLLGetData(from) ,data))
 		{
-			if(DLLItrIsEqual(DLLPushBack(output, (void*)data), DLLItrEnd(output))) 
+			if(DLLItrIsEqual(DLLPushBack(output, DLLGetData(from)), DLLItrEnd(output))) 
 			{								/*if push fails it return tail*/
 				return 1;
 			}
@@ -280,9 +280,9 @@ int DLLForEach(dlist_itr_t from, dlist_itr_t to, action_func_t action, void* par
 	while(!DLLItrIsEqual(from, to) && 0 == status)
 	{
 		status = action(DLLGetData(from),param);
-		
+		from = DLLItrNext(from);
 	}
-	from = DLLItrNext(from);
+	
 	
 	return status;
 }

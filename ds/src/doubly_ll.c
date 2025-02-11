@@ -128,7 +128,7 @@ dlist_itr_t DLLItrBegin(const dlist_t* list)
 dlist_itr_t DLLItrEnd(const dlist_t* list)
 {
 	assert(NULL != list);
-	return NodeToItr((node_t*)&list->tail);
+	return NodeToItr((node_t*)&(list->tail));
 }
 
 /* undefined behavior if itr is tail */
@@ -282,7 +282,6 @@ int DLLForEach(dlist_itr_t from, dlist_itr_t to, action_func_t action, void* par
 		status = action(DLLGetData(from),param);
 		from = DLLItrNext(from);
 	}
-	
 	
 	return status;
 }

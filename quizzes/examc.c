@@ -30,10 +30,10 @@ struct s3
 struct b1
 {
 	unsigned int i : 2;
-	unsigned char c :1 ;
-	unsigned short s : 3;
-	int *j;
-	unsigned char x :2;
+/*	unsigned char c :1 ;*/
+/*	unsigned short s : 3;*/
+/*	int *j;*/
+/*	unsigned char x :2;*/
 };
 
 struct b2
@@ -41,7 +41,6 @@ struct b2
 	unsigned int i : 2;
 	/*unsigned char c : 1 ;
 	unsigned short s : 3; */
-	
 };
 
 union 
@@ -69,6 +68,9 @@ union
 
 } jack3;
 	
+	
+
+	
 int FlipDigitsNum(int num)
 {
 	int sign = 1;
@@ -87,7 +89,6 @@ int FlipDigitsNum(int num)
 	}
 	
 	return sign * rev_num;
-	
 }
 
 unsigned char MirrorBitsByte(unsigned char num)
@@ -119,6 +120,13 @@ char RotateLeft(char byte, unsigned int nbits)
 {
 	nbits = 0x7 & nbits; /*modulu 8*/
 	return (byte << nbits) | (byte >> (8 - nbits));
+}
+
+void Swap1(int *ptr1, int *ptr2)
+{
+	int tmp = *ptr1;
+	*ptr1 = *ptr2;
+	*ptr2 = tmp;
 }
 
 
@@ -272,6 +280,7 @@ int main()
 	char str1[5] = "yana", str2[3] = "ya", str3[8] = ""; 
 	
 	printf("%d\n", FlipDigitsNum(-23));
+	
 	printf("MirrorBitsByte - %d (199)\n",MirrorBitsByte(227));
 	printf("Flip bit is %d (127)\n", FlipBit(123, 2));
 	
@@ -291,7 +300,13 @@ int main()
 	printf ("StrNCpy %s\n", StrCpy(str3, str2));
 	printf ("StrCpy %s\n\n", StrCat(str1, str2));
 	
-	printf ("Fibonacci %ld\n", GetNFibonacciElement(3));
+	printf ("Fibonacci 3 %ld\n", GetNFibonacciElement(3));
+	printf ("Fibonacci 5 %ld\n", GetNFibonacciElement(5));
+	printf ("Fibonacci 7 %ld\n", GetNFibonacciElement(7));
+	
+
+	
+	
 	printf ("IntToString %s\n", IntToString (5, str3));
 	printf("Mult 3 by 8 is-> %d\n\n", MultBy8(3));
 	
@@ -312,9 +327,9 @@ int main()
 	printf("size of struct b1 is %ld\n", sizeof(struct b1));
 	printf("size of struct b2 is %ld\n", sizeof(struct b2));
 	
-	printf("size of jack is %ld\n", sizeof(jack1));
-	printf("size of jack is %ld\n", sizeof(jack2));
-	printf("size of jack is %ld\n", sizeof(jack3));
+	printf("size of jack1 is %ld\n", sizeof(jack1));
+	printf("size of jack2 is %ld\n", sizeof(jack2));
+	printf("size of jack3 is %ld\n", sizeof(jack3));
 	
 	
 	return 0;

@@ -1,3 +1,8 @@
+/******************************************************************************/
+/*Author Yana Glazer
+Reviewd by Liel
+/******************************************************************************/
+
 #include <stdio.h> /*printf*/
 #include <string.h> /*memcpy*/
 #include <stdlib.h> /*calloc*/

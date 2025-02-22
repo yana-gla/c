@@ -134,7 +134,7 @@ slist_itr_t ListInsertBefore(slist_itr_t itr, const void* data)
 	/*allocating new node*/
 	node_in = (node_t*)malloc(sizeof(node_t));
 	
-	if(NULL == node_in)
+	if (NULL == node_in)
 	{
 		return (NULL);
 	}

@@ -2,11 +2,12 @@
 #include <assert.h> /*assert*/
 #include <string.h> /*memset*/
 #include <stdlib.h> /*calloc*/
-
-
 #include "circ_buf.h"
 
 #define OFFSETOF(TYPE, ELEMENT) ((size_t)&(((TYPE *)0)->ELEMENT)) /*later*/
+#define MINN(a, b) ((a < b) ? (a) : (b))
+#define NEQUAL(a, b, c) ((a == b) ? -1 : (c))
+#define IF_EMPTY_SET_0(a)  (((a)== -1) ? 0 : (a))
 
 /*typedef struct circ_buf circ_buf_t;*/
 struct circ_buf
@@ -50,7 +51,6 @@ size_t BufSize(const circ_buf_t* buf)
 	
 	/*if idx_tail not (-1) the buffer not empty*/
 
-	
 	size = (buf->tail_idx + buf->capacity - buf->head_idx) % buf->capacity;
 	
 	if ((0 == size) && (buf->tail_idx != -1))
@@ -75,64 +75,66 @@ int BufIsEmpty(const circ_buf_t* buf)
 }
 
 /*head*/
+/*read from buffer to dst */
 ssize_t BufRead(circ_buf_t* buf, char* dst, size_t n_bytes)
 {
-	size_t bytes_read = n_bytes;
+	size_t first_read = 0;
+	size_t second_read = 0;
+	
 	assert(NULL != buf && NULL != dst);
 	
-	/*if n bigger than buffer size*/
-	if (n_bytes > BufSize(buf))
-	{
-		n_bytes = BufSize(buf);
-		bytes_read = n_bytes;
-	}
+	n_bytes = MINN(n_bytes, BufSize(buf));
 	
-	while (0 < n_bytes--)
-	{
-		*dst++ = buf->arr[buf->head_idx];
-		buf->head_idx = (buf->head_idx + 1) % (buf->capacity);
-		/*--n;*/
-	}
+
+
+	first_read = MINN(buf->capacity - buf->head_idx, n_bytes);
+	memcpy(dst, buf->arr + buf->head_idx, first_read);
 	
-	/*Will empty the buffer, insertion to tail will start from begining*/
-	if (bytes_read == BufSize(buf))
-	{	
-		buf->tail_idx = -1;
-		buf->head_idx = -1;
-	}
 	
-	return (bytes_read);
+	
+	buf->head_idx = (buf->head_idx + first_read) % (buf->capacity);	
+	dst += first_read;
+	
+	second_read = n_bytes - first_read;
+	memcpy(dst, buf->arr + buf->head_idx, second_read);
+	buf->head_idx = (buf->head_idx + second_read) % (buf->capacity);	
+	
+	buf->tail_idx = NEQUAL(n_bytes, BufSize(buf), buf->tail_idx);
+	buf->head_idx = NEQUAL(buf->tail_idx, -1, buf->head_idx);
+	
+	return n_bytes;
 }
 
 /*tail*/
+/* write from src to buffer */
 ssize_t BufWrite(circ_buf_t* buf, const char* src, size_t n_bytes)
 {
-	size_t bytes_write = n_bytes;
+	size_t first_write = 0;
+	size_t second_write = 0;
 	
 	assert(NULL != buf && NULL != src );
 	
 	/*if n bigger than free space in buffer*/
-	if (n_bytes > BufFreeSpace(buf))
-	{
-		n_bytes = BufFreeSpace(buf);
-		bytes_write = n_bytes; /*check*/
-	}
-	
-	/*if buffer is empty*/
-	if (buf->tail_idx < 0)
-	{
-		buf->head_idx = 0;
-		buf->tail_idx = 0;
-	}
-	
-	while (0 < n_bytes--)
-	{
-		buf->arr[buf->tail_idx] = *src++;
-		buf->tail_idx = (buf->tail_idx + 1) % (buf->capacity);
+	/*n_bytes will be the minimum of given n_bytes and the free space in buffer*/
+	n_bytes = MINN(n_bytes, BufFreeSpace(buf));
 
-	}
+	/*if buffer is empty set indices to 0*/		
+	buf->head_idx = IF_EMPTY_SET_0(buf->head_idx);
+	buf->tail_idx = IF_EMPTY_SET_0(buf->tail_idx);
 	
-	return ((ssize_t)bytes_write);
+	/*first part is the minimum of given n_bytes and the space till the end*/
+	first_write = MINN(buf->capacity - buf->tail_idx, n_bytes);
+	memcpy(buf->arr + buf->tail_idx, src, first_write);
+	
+	buf->tail_idx = (buf->tail_idx + first_write) % (buf->capacity); 
+	src += first_write;
+	
+	/*if first part was n_bytes than second part will be 0*/
+	second_write = n_bytes - first_write;
+	memcpy(buf->arr + buf->tail_idx, src, second_write);
+	buf->tail_idx = (buf->tail_idx + second_write) % (buf->capacity); 
+
+	return ((ssize_t)n_bytes);
 }
 
 

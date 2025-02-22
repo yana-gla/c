@@ -1,3 +1,9 @@
+/******************************************************************************/
+/*Author Yana Glazer
+Reviewd by Omri
+/******************************************************************************/
+
+
 #include <stddef.h> /*for size_t*/
 #include <limits.h> /*UCHAR_MAX, CHAR_BIT*/
 #include <assert.h> /*assert*/
@@ -175,9 +181,6 @@ bit_arr_t BitArrayMirror64(bit_arr_t arr)
 	
 	return (arr);
 }
-
-
-/*static unsigned char MirrorByte(unsigned char num)*/
 
 bit_arr_t BitArrayMirror(bit_arr_t arr)
 {

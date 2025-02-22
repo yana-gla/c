@@ -136,19 +136,24 @@ static int TestBufRead(void)
 		return 1;
 	}
 
-	/* Test reading from empty buffer */
+/*	 Test reading from empty buffer */
 	n_bytes_read = BufRead(buf, read_data, 1);
+
 	if (0 != n_bytes_read)
 	{
 		printf(FAIL_FORMAT "\n\tFAILED: Expected 0 bytes read from empty buffer, but got %lu\n" UNFORMAT,
 				(unsigned long)n_bytes_read);
+				fflush(stdout);
+
 		status = 1;
 	}
 
-	/* Write some data and verify read */
+	 /*Write some data and verify read */
 	if (n_bytes_to_write != BufWrite(buf, write_data, n_bytes_to_write))
 	{
+
 		printf(FAIL_FORMAT "\n\tFAILED: Could not write test data to buffer\n" UNFORMAT);
+		fflush(stdout);
 		status = 1;
 	}
 
@@ -158,12 +163,14 @@ static int TestBufRead(void)
 	{
 		printf(FAIL_FORMAT "\n\tFAILED: Expected %lu bytes read, but got %lu\n" UNFORMAT,
 				(unsigned long)n_bytes_to_read, (unsigned long)n_bytes_read);
+				fflush(stdout);
 		status = 1;
 	}
 
 	if (0 != strncmp(write_data, read_data, n_bytes_read))
 	{
 		printf(FAIL_FORMAT "\n\tFAILED: Read data doesn't match written data\n" UNFORMAT);
+		fflush(stdout);
 		status = 1;
 	}
 
@@ -171,6 +178,7 @@ static int TestBufRead(void)
 	{
 		printf(FAIL_FORMAT "\n\tFAILED: Expected 2 bytes remaining, but got %lu\n" UNFORMAT,
 				(unsigned long)BufSize(buf));
+				fflush(stdout);
 		status = 1;
 	}
 
@@ -180,6 +188,7 @@ static int TestBufRead(void)
 	{
 		printf(FAIL_FORMAT "\n\tFAILED: Expected 2 bytes read, but got %lu\n" UNFORMAT,
 				(unsigned long)n_bytes_read);
+				fflush(stdout);
 		status = 1;
 	}
 

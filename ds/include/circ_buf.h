@@ -6,8 +6,6 @@
  
 typedef struct circ_buf circ_buf_t;
 
-
-
 circ_buf_t* BufCreate(size_t capacity);
 
 void BufDestroy(circ_buf_t* buf);

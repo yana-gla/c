@@ -1,8 +1,9 @@
 #include <stdlib.h> /*malloc*/
 #include <assert.h> /*assert*/
 #include <string.h> /*memset*/
-
 #include "doubly_ll.h"
+
+/*Reviewd by Omri*/
 
 typedef struct node node_t;
 
@@ -19,9 +20,11 @@ struct dlist
 	node_t tail;
 };
 
-
 static dlist_itr_t NodeToItr(node_t* node);
 static node_t* ItrToNode(dlist_itr_t itr);
+
+
+/*no check for empty list*/
 
 
 dlist_t* DLLCreate()
@@ -33,6 +36,7 @@ dlist_t* DLLCreate()
 		return NULL;
 	}
 	
+	/*calloc*/
 	doubly_list->head.data = NULL;
 	doubly_list->head.next = &doubly_list->tail;
 	doubly_list->head.prev =  NULL;
@@ -44,9 +48,9 @@ dlist_t* DLLCreate()
 	return doubly_list;
 }
 
-
 void DLLDestroy(dlist_t* list)
 {
+	/*check initialize var*/
 	node_t* curr = NULL;
 	node_t* next = NULL;
 	
@@ -64,6 +68,7 @@ void DLLDestroy(dlist_t* list)
 	
 	memset(list, 0, sizeof(dlist_t));
 	free(list);
+	list = NULL;
 }
 
 size_t DLLCount(const dlist_t* list)
@@ -106,7 +111,7 @@ dlist_itr_t DLLInsertBefore(dlist_t* list, dlist_itr_t itr, void* data)
 		return DLLItrEnd(list); /* (NodeToItr(&list->tail));*/
 	}
 	
-	new_node->data = data;
+	new_node->data = data; /*fun initialize node*/
 	new_node->prev = node_itr->prev;
 	new_node->next = node_itr; /*new_node->prev.next;*/
 	
@@ -289,9 +294,11 @@ int DLLForEach(dlist_itr_t from, dlist_itr_t to, action_func_t action, void* par
 
 dlist_itr_t DLLFind(dlist_itr_t from, dlist_itr_t to, match_func_t is_match, const void* data)
 {
+	dlist_itr_t last_node = NULL;
+	
 	assert(NULL != data);
 	
-	while(!DLLItrIsEqual(from, to))
+	while(!DLLItrIsEqual(from, to) && 0 == is) 
 	{
 		if (is_match(DLLGetData(from) ,data))
 		{

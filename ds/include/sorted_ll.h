@@ -2,9 +2,9 @@
 * File: sorted_ll.h
 *
 * Purpose:
-*   <insert file purpose here>
+*  Implement Sorted List Data Structure
 *
-*
+*Yana Glzer
 ******************************************************************************/
 
 #ifndef __SORTED_LL_H__
@@ -73,7 +73,7 @@ size_t SrtLLCount(const srt_ll_t*);
 
 void* SrtLLGetData(srt_itr_t);/*O(1)*/
 
-/* O(n) fined the firs node that has the data, otherwise return 'to'. */
+/* O(n) fined the first node that has the data, otherwise return 'to'. */
 srt_itr_t SrtLLFind(srt_ll_t* sr_list, void* data);
 
 /* retur 'to' if not found, otherwise return the iterator of node than match the function find if*/

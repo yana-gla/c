@@ -293,20 +293,14 @@ int DLLForEach(dlist_itr_t from, dlist_itr_t to, action_func_t action, void* par
 
 
 dlist_itr_t DLLFind(dlist_itr_t from, dlist_itr_t to, match_func_t is_match, const void* data)
-{
-	dlist_itr_t last_node = NULL;
-	
+{	
 	assert(NULL != data);
 	
-	while(!DLLItrIsEqual(from, to) && 0 == is) 
+	while(!DLLItrIsEqual(from, to) && (0 == is_match(DLLGetData(from) ,data))) 
 	{
-		if (is_match(DLLGetData(from) ,data))
-		{
-			return (from);
-		}
 		from = DLLItrNext(from);
 	}
-	return to;
+	return from;
 }
 
 

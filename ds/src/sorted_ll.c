@@ -113,6 +113,7 @@ int SrtLLItrIsEqual(srt_itr_t itr1, srt_itr_t itr2)
 }
 
 /* insert a new node with data by sorted order - O(n)*/
+/*Returns itr to new node*/
 srt_itr_t SrtLLInsert(srt_ll_t* sr_list, void* data)
 {
 	srt_itr_t itrs = {0};
@@ -125,7 +126,6 @@ srt_itr_t SrtLLInsert(srt_ll_t* sr_list, void* data)
 		
 	while (!SrtLLItrIsEqual(itrs, itrs_end) && sr_list->is_before(SrtLLGetData(itrs), data) < 0 )
 	{
-		
 		itrs = SrtLLItrNext(itrs);
 	}
 	

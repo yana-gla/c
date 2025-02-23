@@ -47,14 +47,14 @@ static int IntComparator(const void* first, const void* second)
 /*					((first < second) ? (-1) : (1)));*/
 	
 	if (*(int*)second < *(int*)first)
-		{
-			return 1;
-		}
-		else if (*(int*)second > *(int*)first)
-		{
-			return -1;
-		}
-		return 0;
+	{
+		return 1;
+	}
+	else if (*(int*)second > *(int*)first)
+	{
+		return -1;
+	}
+	return 0;
 }
 
 static int IsMatch(const void* first, const void* second)

@@ -85,7 +85,7 @@ static int TestUIDCreate(void)
 	status |= TEST_CHECK(0 != uid.time, "UID time component should not be zero");
 	status |= TEST_CHECK(0 != uid.pid, "UID pid component should not be zero");
 	status |= TEST_CHECK(0 < uid.counter, "UID counter component should be positive");
-	status |= TEST_CHECK('\0' != uid.ip_addr, "UID ip_addr should not be empty");
+	status |= TEST_CHECK('\0' != uid.ip_addr[3], "UID ip_addr should not be empty");
 
 	TEST_RESULT(status);
 	return status;
@@ -193,7 +193,7 @@ int main(void)
 {	
 	int status = 0;
 	g_total_checks = 0; g_failed_checks = 0;
-
+	
 	status |= TestUIDCreate();
 	status |= TestUIDInvalid();
 	status |= TestUIDComparison();

@@ -17,7 +17,6 @@ p_queue_t *PQCreate(is_before_t is_before)
 	assert(NULL != is_before);
 	
 	p_queue = (p_queue_t*)malloc(sizeof(p_queue_t));
-	
 	if(NULL == p_queue)
 	{
 		return NULL;
@@ -33,13 +32,13 @@ p_queue_t *PQCreate(is_before_t is_before)
 	return p_queue;
 }
 /*Remove entirely the priority queue from memory*/
-void PQDestroy(p_queue_t *queue)
+void PQDestroy(p_queue_t *p_queue)
 {
-	assert(NULL != queue);
-	SrtLLDestroy(queue->list);
-	queue->list = NULL;
-	free(queue);
-	queue = NULL;
+	assert(NULL != p_queue);
+	SrtLLDestroy(p_queue->list);
+	p_queue->list = NULL;
+	free(p_queue);
+	p_queue = NULL;
 }
 
 int PQIsEmpty(const p_queue_t* p_queue)
@@ -50,14 +49,14 @@ int PQIsEmpty(const p_queue_t* p_queue)
 
 
 /*Remove single element*/
-void PQRemove(p_queue_t *p_queue, match_func_t is_match, void *param)
+void PQRemove(p_queue_t *p_queue, match_func_t is_match, const void *param)
 {
 	srt_itr_t itr = {0};
 	
 	assert (NULL != p_queue);
 	assert (NULL != is_match);
 	
-	itr = SrtLLFindIf(SrtLLItrBegin(p_queue->list), SrtLLItrEnd(p_queue->list), is_match, param);
+	itr = SrtLLFindIf(SrtLLItrBegin(p_queue->list), SrtLLItrEnd(p_queue->list), is_match, (void*)param);
 	SrtLLRemove(itr);
 	
 }
@@ -69,7 +68,7 @@ int PQEnqueue(p_queue_t *p_queue, void *data)
 	srt_itr_t itr = {0};
 	assert (NULL != p_queue);
 	itr = SrtLLInsert(p_queue->list, data);
-	return SrtLLItrIsEqual(itr, SrtLLItrEnd (p_queue->list));
+	return SrtLLItrIsEqual(itr, SrtLLItrEnd(p_queue->list));
 }
 
 void PQDequeue(p_queue_t* p_queue)
@@ -90,12 +89,12 @@ size_t PQCount(const p_queue_t* p_queue)
 	return SrtLLCount(p_queue->list);
 }
 /*Remove all elemnts but keeps the queue*/
-void PQClear(p_queue_t *queue)
+void PQClear(p_queue_t *p_queue)
 {
-	assert(NULL != queue);
-	while (!PQIsEmpty(queue))
+	assert(NULL != p_queue);
+	while (!PQIsEmpty(p_queue))
 	{
-		PQDequeue(queue);
+		PQDequeue(p_queue);
 	}
 }
 

@@ -1,11 +1,9 @@
-#include <unistd.h>      /*for pid_t function*/
-#include <string.h>     /*strcompare*/
-#include <arpa/inet.h> /*ntohl*/
+#include <unistd.h>     /*for pid_t function*/
+#include <string.h>    /*memcmp, memcpy*/
 #include <ifaddrs.h>  /*getifaddrs, freeifaddrs*/
 #include "ilrd_uid.h" 
-
 /******************************************************************************/
-static unsigned int GetIP();
+static void GetIP(char *ip_addr);
 
 ilrd_uid_t bad_id = {0};
 
@@ -20,7 +18,7 @@ ilrd_uid_t CreateUID(void)
 	
 	id.pid = getpid();
 	id.time = time(NULL);
-	id.ip_addr = GetIP();
+	GetIP((char*)&id.ip_addr);
 	
 	return id;
 }
@@ -30,7 +28,7 @@ int CompareUID(const ilrd_uid_t first, const ilrd_uid_t second)
 	return ( (first.counter == second.counter) && 
 			(first.pid == second.pid) &&
 			(first.time == second.time) &&
-			(first.ip_addr == second.ip_addr) );
+			(0 == memcmp(&first.ip_addr, &second.ip_addr, 14))  );
 }
 
 /******************************************************************************/
@@ -38,32 +36,25 @@ int CompareUID(const ilrd_uid_t first, const ilrd_uid_t second)
 /******************************************************************************/
 
 
-static unsigned int GetIP()
+static void GetIP(char *ip_addr)
 {
 	struct ifaddrs *ifap = NULL, *ifa = NULL;
-	struct sockaddr_in *sa = NULL;
-	unsigned int ip_addrs = 0;
 		
 	if (-1 == getifaddrs(&ifap))
 	{
-		return -1;
+		return;
 	}
 	
 	for (ifa = ifap ; NULL != ifa ; ifa = ifa->ifa_next)
 	{
-		if ((NULL != ifa->ifa_addr) && (0 == strcmp("wlp0s20f3", ifa->ifa_name))
+		if ((NULL != ifa->ifa_addr) && (ifa->ifa_flags == 69699)
 									   && (ifa->ifa_addr->sa_family == AF_INET))
 		{
-			sa = (struct sockaddr_in*)ifa->ifa_addr;
-			ip_addrs = ntohl(sa->sin_addr.s_addr); /*Network byte order is Big-Endian, Host (my computer is Little)*/
-			                                       /*(Network TO Host Long) converts the big-endian (network byte order) representation into the correct host byte order*/
-			break;
+			memcpy(ip_addr, &(ifa->ifa_addr->sa_data), 14);
+			break; 
 		}
-	
 	}
 	freeifaddrs(ifap);
-	
-	return ip_addrs;
 }
 /******************************************************************************/
 

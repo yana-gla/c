@@ -6,7 +6,7 @@
 /*#include "doubly_ll.h" doubly linked list*/
 #include "sorted_ll.h"
 
-/* manege structure */
+/* Managing structure */
 struct srt_ll /*srt_ll_t*/
 {
 	dlist_t* dlist;

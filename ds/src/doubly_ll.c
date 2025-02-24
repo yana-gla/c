@@ -3,7 +3,7 @@
 #include <string.h> /*memset*/
 #include "doubly_ll.h"
 
-/*Reviewd by Omri*/
+
 
 typedef struct node node_t;
 

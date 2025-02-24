@@ -1,27 +1,25 @@
 #include <stddef.h> /*size_t*/
 #include <assert.h> /*assert*/
 #include <stdlib.h> /*malloc*/
-
-
-
-#include "p_queue.h"
+#include "sorted_ll.h" /*own header for sotred list implementation*/
+#include "p_queue.h" /*own header*/
 
 struct p_queue{
 	srt_ll_t *list;
 };
 
-p_queue_t *PQCreate(is_before_t is_before)
+p_queue_t *PQCreate(cmp_func_t cmp_func)
 {
 	p_queue_t *p_queue = NULL;
 	
-	assert(NULL != is_before);
+	assert(NULL != cmp_func);
 	
 	p_queue = (p_queue_t*)malloc(sizeof(p_queue_t));
 	if(NULL == p_queue)
 	{
 		return NULL;
 	}
-	p_queue->list = SrtLLCreate(is_before);
+	p_queue->list = SrtLLCreate(cmp_func);
 	if(NULL == p_queue->list)
 	{
 		free(p_queue);
@@ -49,7 +47,7 @@ int PQIsEmpty(const p_queue_t* p_queue)
 
 
 /*Remove single element*/
-void PQRemove(p_queue_t *p_queue, match_func_t is_match, const void *param)
+void PQRemove(p_queue_t *p_queue, is_match_t is_match, void *param)
 {
 	srt_itr_t itr = {0};
 	

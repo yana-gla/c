@@ -2,10 +2,13 @@
 * File: doubly_ll.h
 *
 * Purpose:
-*   <insert file purpose here>
+*   Implementation of dounly linked list data structure, including iterator functionality.
+	Data saved by reference.
 *
-* Author:
-*   Yana Glazer
+* Author: Yana Glazer
+*   
+*
+*Reviwed by: Omri Naor
 *
 ******************************************************************************/
 
@@ -34,7 +37,7 @@ Complexity: o(1)
 */
 typedef int (*action_func_t) (void* data, void* param);
 
-/******************************************************************************/
+/***************************** Interface **************************************/
 
 dlist_t* DLLCreate();
 void DLLDestroy(dlist_t* list);
@@ -88,4 +91,4 @@ int DLLMultiFind(dlist_itr_t from, dlist_itr_t to, match_func_t is_match, const 
 /******************************IN SRC FILE ***************************/
 
 
-#endif
+#endif /*DOUBLY_LL_H*/

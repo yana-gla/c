@@ -189,6 +189,7 @@ char *StrNCpy(char *dest, const char *src, int n)
 	while (n > 0)
 	{
 		*dest++ = '\0';
+		--n;
 	}
 	
 	*dest = '\0';

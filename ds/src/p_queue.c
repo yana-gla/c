@@ -34,7 +34,7 @@ void PQDestroy(p_queue_t *p_queue)
 {
 	assert(NULL != p_queue);
 	SrtLLDestroy(p_queue->list);
-	p_queue->list = NULL;
+	p_queue->list = NULL; /*like memset*/
 	free(p_queue);
 	p_queue = NULL;
 }
@@ -46,17 +46,28 @@ int PQIsEmpty(const p_queue_t* p_queue)
 }
 
 
-/*Remove single element*/
-void PQRemove(p_queue_t *p_queue, is_match_t is_match, void *param)
+/*Remove single element matching (function) param. Enable to remove elemnt not 
+according priority*/
+void *PQRemove(p_queue_t *p_queue, is_match_t is_match, void *param)
 {
 	srt_itr_t itr = {0};
+	void *data = NULL;
 	
 	assert (NULL != p_queue);
 	assert (NULL != is_match);
 	
+	
 	itr = SrtLLFindIf(SrtLLItrBegin(p_queue->list), SrtLLItrEnd(p_queue->list), is_match, (void*)param);
+	/*if SrtLLFindIf didn't find it return tail and there is nothing to remove*/
+	if (SrtLLItrIsEqual(itr, SrtLLItrEnd(p_queue->list)))
+	{
+		return NULL;
+	}
+	
+	data = SrtLLGetData(itr);
 	SrtLLRemove(itr);
 	
+	return data;
 }
 
 /*When success returns 0, O.W 1*/

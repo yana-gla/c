@@ -2,13 +2,16 @@
 * File: scheduler.h
 *
 * Purpose:
-*   <insert file purpose here>
+*   Implementation of scheduler.
+*	The scheduler enables serial execution of operation (tasks) at predetermined
+*	time intervals.
+*	It should allow for the addition of new tasks, and the removal of
+*	irrelevant ones as well.
 *
-* Author:
-*   
+* Author: Yana GLazer
+*24/02/2025
 *
 ******************************************************************************/
-
 #ifndef __SCHEDULER_H__
 #define __SCHEDULER_H__
 
@@ -54,10 +57,5 @@ size_t SchedCount(scheduler_t* scheduler);
 
 #endif
 
-/* scheduler.c *********************************************************/
-typedef struct scheduler
-{  
-    p_queue_t* pq;
-} scheduler_t;
 
-static int MatchUIDs(const void* uid1, const void* uid2); /* implementation */
+

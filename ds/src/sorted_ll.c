@@ -119,7 +119,8 @@ srt_itr_t SrtLLInsert(srt_ll_t* sr_list, void* data)
 	srt_itr_t itrs = {0};
 	srt_itr_t itrs_end = {0};
 	
-	assert((NULL != sr_list) && (NULL != data));
+	assert(NULL != sr_list);
+	assert(NULL != data);
 	
 	itrs = SrtLLItrBegin(sr_list);
 	itrs_end = SrtLLItrEnd(sr_list);
@@ -187,7 +188,7 @@ srt_itr_t SrtLLFind(srt_ll_t* sr_list, void* data)
 	return (sr_list->is_before(SrtLLGetData(itrs), data) == 0) ? itrs : itrs_end;
 }
 
-/* retur 'to' if not found, otherwise return the iterator of node than match the function find if*/
+/* return 'to' if not found, otherwise return the iterator of node than match the function find if*/
 srt_itr_t SrtLLFindIf(srt_itr_t from, srt_itr_t to, match_func_t is_match, void* data)
 {
 	/*srt_itr_t itrs = {0};*/

@@ -26,6 +26,7 @@ task_t* TaskCreate(time_t time,    /* absolute time */   /* for add task in sche
 {
 	task_t *task = NULL;
 	assert(NULL != job_func);
+	assert(NULL != cleanup_func);
 	
 	task = (task_t*)calloc(1, sizeof(task_t));
 	if (NULL == task)
@@ -48,6 +49,7 @@ void TaskDestroy(task_t* task)
 {
 	assert(NULL != task);
 	
+	TaskCleanUp(task);
 	memset(task, 0, sizeof(task_t));
 	free(task);
 	task = NULL;

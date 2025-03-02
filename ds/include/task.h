@@ -50,7 +50,7 @@ void TaskSetTime(task_t* task, time_t time); /* for start scheduler (periodic ta
 /* Retrieves UID associated with given task */
 ilrd_uid_t TaskGetUID(task_t* task); /* for add task in scheduler*/
 
-/* Runs task job function - return is the interval, -1 if non-periodic (overwrite bulit-in interval?) */
+/* Runs task job function - return is the interval, -1 if non-periodic (overwrite bulit-in interval) */
 ssize_t TaskRun(task_t* task); /* for start scheduler */
 
 /* Runs task cleanup function */

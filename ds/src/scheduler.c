@@ -2,8 +2,8 @@
 #include<unistd.h> /*sleep*/
 #include <assert.h> /*assert*/
 #include <string.h> /*memset*/
-
-#include "p_queue.h"
+#include "p_queue.h" /*own implementation for priority queue*/
+#include "task.h"/*own imp. for task*/
 #include "scheduler.h"
 
 
@@ -13,9 +13,9 @@ struct scheduler
     volatile int on;
 };
 
-
 static int cmp_func(const void* data1, const void* data2);
 static int MatchUIDs(const void* uid1, const void* uid2);
+static void RemoveTask(task_t* task);
 
 /******************************************************************************/
 scheduler_t* SchedCreate(void)
@@ -86,7 +86,7 @@ ilrd_uid_t SchedAddTask(scheduler_t* scheduler,
 	
 	if (0 != PQEnqueue(scheduler->pq, task_p))
 	{
-		TaskDestroy(task_p);
+		RemoveTask(task_p);
 		return bad_id;
 	}
 	
@@ -110,7 +110,7 @@ int SchedRemoveTaskByUID(scheduler_t* scheduler, ilrd_uid_t uid)
 		return 1;
 	}
 	
-	TaskDestroy(task_p);
+	RemoveTask(task_p);
 	return 0;
 }
 
@@ -147,12 +147,14 @@ int SchedStart(scheduler_t* scheduler)
 		}
 
 		PQDequeue(scheduler->pq);
+		
 		/*interval is according to return value from run*/
+		/*Removing of task only happening when start returns -1*/
 		cur_interval = TaskRun(cur_task);
 		
 		if (-1 == cur_interval)
 		{
-			TaskDestroy(cur_task);
+			RemoveTask(cur_task);
 		}
 		else
 		{
@@ -161,11 +163,13 @@ int SchedStart(scheduler_t* scheduler)
 			
 			if (0 != status)
 			{
-				TaskDestroy(cur_task);
+				RemoveTask(cur_task);
 			}
 			
 		}
 	}
+	
+	scheduler->on = 0;
 	
 	return status;
 }
@@ -188,7 +192,7 @@ void SchedClear(scheduler_t* scheduler)
 	while (!SchedIsEmpty(scheduler))
 	{
 		task = (task_t*)PQPeek(scheduler->pq);
-		TaskDestroy(task);
+		RemoveTask(task);
 		PQDequeue(scheduler->pq);
 	}
 	
@@ -225,4 +229,11 @@ static int MatchUIDs(const void* uid1, const void* uid2)
 	
 	return CompareUID(*(ilrd_uid_t*)uid1, *(ilrd_uid_t*)uid2);
 }
+
+static void RemoveTask(task_t* task)
+{
+	TaskCleanUp(task);
+	TaskDestroy(task);
+}
+
 

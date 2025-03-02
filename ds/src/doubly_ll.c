@@ -96,7 +96,8 @@ int DLLIsEmpty(const dlist_t* list)
 	/*return !((int)DLLCount(list));*/
 }
 
-/*If succeed returns pointer to new node, fails- pointer to and done*/
+/*If succeed returns pointer to new node, fails- pointer to end node*/
+/*first insert through tail*/
 dlist_itr_t DLLInsertBefore(dlist_t* list, dlist_itr_t itr, void* data)
 {
 	node_t *new_node = NULL;

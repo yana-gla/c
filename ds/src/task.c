@@ -49,7 +49,6 @@ void TaskDestroy(task_t* task)
 {
 	assert(NULL != task);
 	
-	TaskCleanUp(task);
 	memset(task, 0, sizeof(task_t));
 	free(task);
 	task = NULL;

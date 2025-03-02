@@ -4,7 +4,7 @@
 * Purpose:
 *   <insert file purpose here>
 *
-* Author:
+* Author: Yana Glazer
 *   
 *
 ******************************************************************************/

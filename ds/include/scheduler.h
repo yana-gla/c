@@ -8,17 +8,20 @@
 *	It should allow for the addition of new tasks, and the removal of
 *	irrelevant ones as well.
 *
-* Author: Yana GLazer
-*24/02/2025
-*
+* Author: Yana Glazer
+*	24/02/2025
+*Reviwed by: Corine Bracha
+*	02/03/25
 ******************************************************************************/
 #ifndef __SCHEDULER_H__
 #define __SCHEDULER_H__
 
 #include "ilrd_uid.h"
-#include "task.h"
 
 typedef struct scheduler scheduler_t;
+
+typedef ssize_t (*job_t)(void* params);
+typedef void (*cleanup_t)(void* params);
 
 /* O(1) */
 scheduler_t* SchedCreate(void);
@@ -29,9 +32,9 @@ void SchedDestroy(scheduler_t* scheduler);
 /* add task to scheduler, O(n) */
 ilrd_uid_t SchedAddTask(scheduler_t* scheduler,
                         size_t time,    /* absolute time */
-                        job_func_t job_func,    
+                        job_t job_func,    
                         void* job_params,
-                        cleanup_func_t cleanup_func,
+                        cleanup_t cleanup_func,
                         void* cleanup_params,
                         size_t interval);
  

@@ -86,8 +86,7 @@ void InsertionSort(int arr[], size_t size)
 void CountingSort(int arr[], size_t size)
 {
 	size_t max = 0;
-	size_t i = 0;
-	size_t numItemsBefore = 0, count = 0;
+	size_t i = 0, out_idx = 0;
 	
 	int *count_array = NULL;
 	int *output_array = NULL;
@@ -109,11 +108,9 @@ void CountingSort(int arr[], size_t size)
 	}
 	
 	/*cumulative sum*/
-	for (i = 0; i < max + 1; ++i)
+	for (i = 1; i < max + 1; ++i)
 	{
-		count = count_array[i];
-		count_array[i] = numItemsBefore;
-		numItemsBefore += count;
+		count_array[i] += count_array[i-1];
 	}
 	
 	output_array = (int*)malloc(size * sizeof(int));
@@ -121,11 +118,12 @@ void CountingSort(int arr[], size_t size)
 	{
 		return;
 	}
+	
 	/*create output array*/
-	for (i = 0; i < size ; ++i)
+	for (i = size; i > 0 ; --i)
 	{
-		output_array[count_array[arr[i]]] = arr[i];
-		++count_array[arr[i]];
+		out_idx = --count_array[arr[i]];
+		output_array[out_idx] = arr[i];
 	}
 
 	
@@ -133,9 +131,6 @@ void CountingSort(int arr[], size_t size)
 	free(count_array);
 	free(output_array);
 }
-
-
-
 /******************************************************************************/
 void RadixSort(int arr[], size_t size)
 {

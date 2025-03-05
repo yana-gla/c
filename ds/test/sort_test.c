@@ -26,8 +26,8 @@ int main(void)
 	TestSort(BubbleSort, "Bubble Sort", 10000);
 	TestSort(SelectionSort, "Selection Sort", 10000);
 	TestSort(InsertionSort, "Insertion Sort", 10000);
-/*	TestSort(CountingSort, "Counting Sort", 101);*/
-/*	TestSort(RadixSort, "Radix Sort", 1000001);*/
+	TestSort(CountingSort, "Counting Sort", 100);
+	TestSort(RadixSort, "Radix Sort", 1000000);
 /*	TestCountingSortNegative();*/
 
 	if (0 == result)
@@ -90,7 +90,6 @@ void TestSort(SortFunction sort_func, char* sort_name, int max_value)
         arr1[i] = rand() % max_value;
         arr2[i] = arr1[i];
     }
-
 
 	start = clock();
 	sort_func(arr1, SIZE);

@@ -33,10 +33,13 @@ void SelectionSort(int arr[], size_t size);
 /******************************************************************************
  *InsertionSort
  *comparison-based
- 
- 
  ******************************************************************************/
 void InsertionSort(int arr[], size_t size);
+/******************************************************************************/
+
+void CountingSort(int arr[], size_t size);
+
+void RadixSort(int arr[], size_t size);
 
 
 

@@ -1,7 +1,7 @@
 #include <stddef.h> /*NULL*/
 #include <stdio.h> /*printf*/
 #include <stdlib.h> /*malloc*/
-/*#include <assert.h> */
+#include <assert.h> 
 
 #define GREEN "\x1b[1;32m"
 #define RED "\x1b[1;31m"
@@ -63,6 +63,7 @@ node_t *Flip(node_t *head)
 }
 
 
+
 /******************************************************************************/
 /*Tells whether a given slist has a loop
  slow pointer- advance one position, fast pointer- advance two positions.
@@ -102,13 +103,18 @@ node_t *FindIntersection(node_t *head_1, node_t *head_2)
 	
 	while (ptr1 != ptr2)
 	{
-		ptr1 = (ptr1 == NULL) ? head_2:  ptr1->next;
+		ptr1 = (ptr1 == NULL) ? head_2 : ptr1->next;
 		ptr2 = (ptr2 == NULL) ? head_1 : ptr2->next;
 	}
 	
 	/*return intersection point or null*/
 	return ptr1;
 }
+
+
+
+
+
 /******************************************************************************/
 
 
@@ -528,14 +534,12 @@ static int TestHasLoopTwoElementsWithLoop()
 
 static int TestHasLoopTwoElementsWithLoop2()
 {
-	int a = 1, b = 2;
+	int a = 1;
 	node_t n1 = {0};
-	node_t n2 = {0};
 	
 	n1.data = &a;
 	n1.next = &n1;
-	n2.data = &b;
-	n2.next = NULL;
+
 	
 	printf(BLUE"\tSTART TWO ELEMENT TEST WITH LOOP 2:\n"UNFORMAT);
 	if (1 != HasLoop(&n1))

@@ -19,6 +19,7 @@ p_queue_t *PQCreate(cmp_func_t cmp_func)
 	{
 		return NULL;
 	}
+	
 	p_queue->list = SrtLLCreate(cmp_func);
 	if(NULL == p_queue->list)
 	{
@@ -33,8 +34,11 @@ p_queue_t *PQCreate(cmp_func_t cmp_func)
 void PQDestroy(p_queue_t *p_queue)
 {
 	assert(NULL != p_queue);
+	
 	SrtLLDestroy(p_queue->list);
 	p_queue->list = NULL; /*like memset*/
+	/*memset(p_queue, 0, sizeof(p_queue_t));*/
+	
 	free(p_queue);
 	p_queue = NULL;
 }
@@ -55,7 +59,6 @@ void *PQRemove(p_queue_t *p_queue, is_match_t is_match, void *param)
 	
 	assert (NULL != p_queue);
 	assert (NULL != is_match);
-	
 	
 	itr = SrtLLFindIf(SrtLLItrBegin(p_queue->list), SrtLLItrEnd(p_queue->list), is_match, (void*)param);
 	/*if SrtLLFindIf didn't find it return tail and there is nothing to remove*/

@@ -167,7 +167,7 @@ void BSTRemove(bst_itr_t itr)
 	if (NULL != node->children[LEFT] && NULL != node->children[RIGHT])
 	{
 		/*find next*/
-		successor = Extremum(node->children[RIGHT], LEFT);
+		successor = BSTItrToNode(BSTItrNext(itr));
 		node->data = successor->data;
 		node = successor;
 	}

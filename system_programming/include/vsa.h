@@ -15,70 +15,68 @@
 #ifndef __VSA_H__
 #define __VSA_H__
 
-#include <stddef.h> 								/* size_t */
+#include <stddef.h> /* size_t */
 
 typedef struct vsa vsa_t;
 
 /*******************************************************************************
 * VSAInit
-* Initializes a new Variable Size Allocator in the provided memory space.
-*
+* Creates new variable size allocator
+* 
 * Parameters:
-* 	memory - pointer to allocated memory for the VSA
-* 	memory_size - size of the provided memory in bytes
+* 	memory - pointer to allocated memory for vsa
+* 	memory_size - size of allocated memory in bytes
 *
 * Returns:
-* 	pointer to initialized Variable Size Allocator
-* 	NULL if initialization failed (insufficient memory size or if vsa is NULL)
+* 	pointer to created vsa
+* 	NULL if vsa is NULL or not enough memory
 *
-* Complexity: O(1)
+* Time Complexity: O(1)
 *******************************************************************************/
 vsa_t* VSAInit(void* memory, size_t memory_size);
 
 /*******************************************************************************
 * VSAAllocate
-* Allocates a variable sized block from the VSA
+* Allocates requested sized block from vsa
 *
 * Parameters:
-*	vsa - pointer to the VSA
-*	memory_size - desired size of block in bytes
+*	vsa - pointer to vsa
+*	memory_size - Requested memory size
 *
 * Returns:
-* 	pointer to the allocated block on success
-* 	NULL if no blocks of given size are available or if vsa is NULL
+* 	On success- pointer to allocated block
+* 	NULL if allocation did'nt happen due lack of space
 *
-* Complexity: O(n) where n is the number of blocks
+* Time Complexity: O(n), n- number of allocated blocks in vsa
 *******************************************************************************/
 void* VSAAllocate(vsa_t* vsa, size_t memory_size);
 
 /*******************************************************************************
 * VSALargestBlock
-* Gets size of largest free block in VSA
+* Returns size of largest free block in vsa
 *
 * Parameters:
-* 	vsa - pointer to the VSA
+* 	vsa - pointer to vsa
 *
 * Returns:
-* 	size of largest available block
-* 	0 if no blocks available or if vsa is NULL
+* 	size of largest free block (0 is full vsa)
 *
-* Complexity: O(n) where n is the number of blocks
+* Time Complexity: O(n), n- number of allocated blocks in vsa
 *******************************************************************************/
 size_t VSALargestBlock(vsa_t* vsa);
 
 /*******************************************************************************
 * VSAFree
-* Returns a previously allocated block to the VSA; undefined behavior with
-* invalid pointer
+* Free prevoiusly allocated block in vsa
 *
 * Parameters:
-* 	block - pointer to the block to be freed
+* 	block - pointer to prevoiusly allocated block in vsa
 *
 * Returns: void
 *
-* Complexity: O(1)
+* Time Complexity: O(1)
 *******************************************************************************/
 void VSAFree(void* block);
 
-#endif
+#endif /*__VSA_H__*/
 

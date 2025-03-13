@@ -93,7 +93,7 @@ static int TestBSTForEach(void);
 
 /* Test Helper Prototypes */
 static int CompareInts(const void* num1, const void* num2);
-static int AddOneToInt(void* p_int, void* params);
+static int DummyAction(void* p_int, void* params);
 
 /* Test Helper Global Vars */
 static size_t g_action_count;
@@ -110,7 +110,7 @@ static int CompareInts(const void* num1, const void* num2)
 					((*(int*)num1 < *(int*)num2) ? (-1) : (1)));
 }
 
-static int AddOneToInt(void* p_int, void* params)
+static int DummyAction(void* p_int, void* params)
 {
 	(void)params;
 
@@ -121,7 +121,7 @@ static int AddOneToInt(void* p_int, void* params)
 		return (1);
 	}
 
-	++(*(int*)p_int);
+	--g_action_count;
 
 	return (0);
 }
@@ -151,24 +151,21 @@ static int TestBSTInsertRemove(void)
 {
 	bst_t* bst = NULL;
 	int status = 0;
-	
+
 	printf("Testing BST Insert/Remove...");
-	
+
 	bst = BSTCreate(CompareInts);
 	if (NULL != bst)
 	{
-
 		int values[] = {5, 1, 3, 4, 10, 20, 30, 7, 0, 2};
 		size_t n_values = 10;
 		size_t i  = 0;
-		
-
 
 		for (i = 0; i < n_values; ++i)
 		{
 			BSTInsert(bst, &values[i]);
 		}
-			
+
 		TEST_CHECK(0 == BSTIsEmpty(bst),
 				"BSTIsEmpty should return false after inserts");
 		TEST_CHECK(n_values == BSTCount(bst),
@@ -306,7 +303,7 @@ static int TestBSTFind(void)
 	end = BSTItrEnd(bst);
 
 	/* Test find on empty tree */
-	found = BSTFind(bst, &values[0]);
+	found = BSTFind(bst, &values[0]);;
 	status |= TEST_CHECK(BSTIsSameItr(found, end),
 			"Find on empty tree should return end iterator");
 
@@ -355,7 +352,6 @@ static int TestBSTForEach(void)
 {
 	bst_t* bst = NULL;
 	int values[] = {50, 25, 75, 10, 30, 60, 85, 5, 15, 27, 40, 55, 70, 80, 90};
-	int modified_values[15]; /* Will store copies to modify */
 	size_t n_values = sizeof(values) / sizeof(values[0]);
 	size_t i = 0;
 	bst_itr_t begin = {0}, end = {0}, mid1 = {0}, mid2 = {0};
@@ -367,24 +363,18 @@ static int TestBSTForEach(void)
 	bst = BSTCreate(CompareInts);
 	status |= TEST_CHECK(NULL != bst, "Failed to initialize BST");
 
-	/* Copy the values so we can modify them */
-	for (i = 0; i < n_values; ++i)
-	{
-		modified_values[i] = values[i];
-	}
-
 	/* Insert values */
 	for (i = 0; i < n_values; ++i)
 	{
-		BSTInsert(bst, &modified_values[i]);
+		BSTInsert(bst, &values[i]);
 	}
 
 	begin = BSTItrBegin(bst);
 	end = BSTItrEnd(bst);
 
-	/* Test AddOne action that stops after first iteration */
-	g_action_count = 0; /* This will cause AddOneToInt to return 1 on first call */
-	return_value = BSTForEach(begin, end, AddOneToInt, NULL);
+	/* Test action that stops after first iteration */
+	g_action_count = 0; /* This will cause to return 1 on first call */
+	return_value = BSTForEach(begin, end, DummyAction, NULL);
 
 	status |= TEST_CHECK(1 == return_value,
 			"ForEach should return non-zero when action returns non-zero");
@@ -395,14 +385,14 @@ static int TestBSTForEach(void)
 
 	/* Test partial range */
 	g_action_count = 10; /* More than enough for this range */
-	return_value = BSTForEach(mid1, mid2, AddOneToInt, NULL);
+	return_value = BSTForEach(mid1, mid2, DummyAction, NULL);
 
 	status |= TEST_CHECK(0 == return_value,
 			"ForEach on partial range should succeed");
 
 	/* Test empty range */
 	g_action_count = 1;
-	return_value = BSTForEach(begin, begin, AddOneToInt, NULL);
+	return_value = BSTForEach(begin, begin, DummyAction, NULL);
 	status |= TEST_CHECK(0 == return_value,
 			"ForEach on empty range should succeed without calling action");
 	status |= TEST_CHECK(1 == g_action_count,

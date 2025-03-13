@@ -1,4 +1,5 @@
-/****************************** bst.h *********************************/
+#ifndef __BST_H__
+#define __BST_H__
 
 /*
 * Comparator function : receives and compares 2 data references
@@ -122,5 +123,5 @@ int BSTForEach(bst_itr_t from,
 			   void* params);
 
 
-/****************************** bst.c *********************************/
+#endif /*BST_H */
 

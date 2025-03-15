@@ -18,25 +18,25 @@ int FindElementCirSortedArray(int arr[], int size, int target)
 		/*if left is soreted*/
 		if (arr[l] <= arr[m])
 		{
-			if (target > arr[m] || target < arr[l])
+			if (target < arr[m] && target >= arr[l])
 			
 			{
-				l = m + 1;
+				r = m - 1;
 			}
 			else /*(target >= arr[l] && target < arr[m] )*/
 			{
-				r = m - 1;
+				l = m + 1;
 			}
 		}
 		else /*if right is soreted*/
 		{
-			if (target < arr[m] || target > arr[r])
+			if (target > arr[m] && target <= arr[r])
 			{
-				r = m-1;
+				l = m + 1;
 			}
 			else
 			{
-				l = m + 1;
+				r = m - 1;
 			}
 		}
 	}

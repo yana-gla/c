@@ -30,7 +30,7 @@ Yana Glazer
 
 
 
-/*********************************** Q1 ***************************************/
+/*********************************** Q1 FSA ***********************************/
 /*FSA*/
 typedef struct fsa 
 {
@@ -64,6 +64,66 @@ void Free(fsa_t *fsa, void *block)
 	fsa->off_free_block =(size_t)((char*)block - (char*)fsa);
 }
 
+
+/*********************************** Q1 VSA ***********************************/
+#define WORD_SIZE sizeof(size_t)
+#define METADATA_SIZE sizeof(vsa_t)
+#define ROUND_UP_TWS(size)  (size + (WORD_SIZE - 1)) & ~(WORD_SIZE - 1)
+#define ABS(x) ((x > 0) ? x : (-x))
+#define NEXT_META(adr) ((long*)((char*)adr + WORD_SIZE + (ABS(*adr))))
+#define END ((long)-1) /*end value in memory*/
+/*VSA*/
+void* VSAAllocate(vsa_t* vsa, size_t memory_size)
+{
+	long *runner = (long*)vsa, *free_block = NULL;
+	long next_free_space = 0;
+	int not_found = 1;
+	memory_size = ROUND_UP_TWS(memory_size);
+
+	assert(NULL != vsa);
+	assert(0 < memory_size);/*check if neccasery*/
+	
+	while (not_found && (END != *runner))
+	{
+		if (*runner >= 0)
+		{
+			VSADefrag(runner); /*combine free consecutive blocks (until first negative)*/
+		}
+
+		next_free_space = *runner - memory_size;
+		if (next_free_space >= 0)
+		{
+			/*pointer to free block*/
+			free_block = (long*)((char*)runner + METADATA_SIZE); 
+			/*update occupancy current block*/
+			*runner = -memory_size;
+			not_found = 0;
+		}
+		if(next_free_space > 0)
+		{
+			/*update after the block, amount of free space*/
+			*(long*)((char*)free_block + memory_size) = next_free_space - METADATA_SIZE;
+		}
+		/*jump to next metadata*/
+		runner = NEXT_META(runner); 
+	}
+	return free_block;
+}
+
+
+void VSAFree(void* block)
+{
+	long *meta_block = (long*)((char*)block - METADATA_SIZE);
+	
+	assert(NULL != block);
+	
+	if (0 <= block)
+	{
+		return;
+	}
+	
+	*meta_block *= -1;
+}
 /*********************************** Q2 ***************************************/
 /*Reverse list*/
 typedef struct nodes

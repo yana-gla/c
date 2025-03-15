@@ -34,7 +34,8 @@ void Find2MissingNumber(int arr[], int arr_size)
 
 void Find2MissingNumberXor(int arr[], int arr_size)
 {
-	int xor_all = 0;
+	int xor_all = 0; /*this value is the xor of both missing number, 3^5*/
+	int right_set_bit = 0;
 	int p = 0, q = 0;
 	int i = 0, n = arr_size + 2;
 	
@@ -49,11 +50,11 @@ void Find2MissingNumberXor(int arr[], int arr_size)
 	}
 	
 	/*right most set bit*/
-	xor_all = xor_all & (~(xor_all-1)); 
+	right_set_bit = xor_all & (~(xor_all-1)); 
 	
 	for (i = 0; i < arr_size ; ++i)
 	{
-		if ((arr[i] & xor_all) == xor_all)
+		if ((arr[i] & right_set_bit) == right_set_bit)
 		{
 			p ^= arr[i];
 		}
@@ -65,7 +66,7 @@ void Find2MissingNumberXor(int arr[], int arr_size)
 	
 	for (i = 1; i <= n ; ++i)
 	{
-		if ((i & xor_all) == xor_all)
+		if ((i & right_set_bit) == right_set_bit)
 		{
 			p ^= i;
 		}

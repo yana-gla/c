@@ -1,6 +1,7 @@
 #include <stdio.h> /*print*/
 #include <stdlib.h> /*malloc*/
 #include <assert.h> 
+#include <string.h>
 #include "recursion.h"
 
 #define GREEN "\x1b[1;32m"
@@ -394,6 +395,32 @@ void TestStrcpy()
 	printf("Should be ab : %s\n", Strcpy(dest2, src2));
 }
 
+void TestStrcat()
+{
+	char dest1[6] = "ab", *src1 = "cde", *src2 = "ab";
+	char dest2[3] = "", dest3[3] = "";
+	
+	printf("Should be abcde: %s\n", Strcat(dest1, src1));
+	printf("Should be cde: %s\n", Strcat(dest2, src1));
+	printf("Should be ab: %s\n", Strcat(dest3, src2));
+	
+	
+/*	printf("Should be ab: %s\n", strcat(dest3, src2));*/
+	
+}
+
+void TestStrstr()
+{
+	char *hay1 = "abcd", *need1 = "bc";
+	char *hay2 = "abcd", *need2 = "";
+	char *hay3 = "abcd", *need3 = "f";
+	
+	
+	printf ("Should be bcd: %s\n", Strstr(hay1, need1));
+	printf ("Shold be abcd %s\n", Strstr(hay2, need2));
+	printf ("should be 1: %d\n",  (NULL == Strstr(hay3, need3)));
+}
+
 
 int main(void)
 {
@@ -401,8 +428,8 @@ int main(void)
 	FibonacciTest(FibonacciIterative);
 	printf("\n");
 	
-/*	printf("start test fibonaci recursive\n");*/
-/*	FibonacciTest(FibonacciRecrusive);*/
+	printf("start test fibonaci recursive\n");
+	FibonacciTest(FibonacciRecrusive);
 	printf("\n");
 	
 	TestFlipList();
@@ -424,6 +451,16 @@ int main(void)
 	printf(UNDERLINE("Strcpy:\n"));
 	TestStrcpy();
 	printf("\n");
+	
+	printf(UNDERLINE("Strcat:\n"));
+	TestStrcat();
+	printf("\n");
+
+	printf(UNDERLINE("Strstr:\n"));
+	TestStrstr();
+	printf("\n");
+
+	printf("\n🎉End of test!\n");
 	
 	return 0;
 }

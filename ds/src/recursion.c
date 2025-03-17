@@ -1,4 +1,6 @@
+#include <string.h> /*for strncmp*/
 #include "recursion.h"
+
 
 /*0 indicates error*/
 size_t FibonacciIterative(int element_index)
@@ -44,6 +46,7 @@ Node *FlipList(Node *head)
 	{
 		return head;
 	}
+	/*recursion call- until the end of the list*/
 	new_head = FlipList(head->next);
 	
 	head->next->next = head;
@@ -53,7 +56,7 @@ Node *FlipList(Node *head)
 }
 
 /****************************  Stack  *****************************************/
-void InsertInSortedOrder(stack_t *stack, int num)
+static void InsertInSortedOrder(stack_t *stack, int num)
 {
 	int temp = 0;
 	/*Base case: stack empty / current element greater than top*/
@@ -98,7 +101,7 @@ int Strlen(const char *string)
 		return 0;
 	}
 	
-	return 1 + Strlen(++string);
+	return (1 + Strlen(++string));
 }
 
 int Strcmp(const char *str1, const char *str2)
@@ -131,13 +134,39 @@ char *Strcpy(char *dest, const char *src)
 		*dest = '\0';
 		return dest;
 	}
+	
 	*dest = *src;
 	Strcpy(dest+1, src+1);
 
 	return dest;
 }
 
+char *Strcat(char *dest, const char *src)
+{
+	if ('\0' == *dest)
+	{
+		return Strcpy(dest, src);
+	}
+	
+	Strcat(dest + 1, src);
+	return dest;
+}
 
+
+char *Strstr(const char *haystack, const char *needle)
+{
+	size_t needle_length =	Strlen(needle);
+	if ('\0' == *needle || 0 == strncmp(haystack, needle, needle_length))
+	{
+		return (char*)haystack;
+	}
+	if ('\0' == *haystack)
+	{
+		return NULL;
+	}
+	
+	return Strstr(haystack + 1, needle);
+}
 
 
 

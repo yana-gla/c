@@ -3,7 +3,7 @@
 #include <string.h>
 #include <time.h> 
 #include <stdlib.h>
-#include "sort.h"
+#include "sort_algo.h"
 
 #define GREEN "\x1b[1;32m"
 #define RED "\x1b[1;31m"

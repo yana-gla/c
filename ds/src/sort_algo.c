@@ -1,6 +1,6 @@
 #include <stdlib.h> /*calloc*/
 #include <string.h> /*memset*/
-#include "sort.h"
+#include "sort_algo.h"
 
 /******************************************************************************/
 static void Swap(int *a, int *b);

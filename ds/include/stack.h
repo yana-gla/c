@@ -14,11 +14,15 @@ Reviwed by: Liel YIzhak 27.01.25
 
 typedef struct stack stack_t;
 
-stack_t *Create(size_t, size_t); 
+/*creates new stack, capacity is number of elemnts in stack,
+ element size is size of single elemnt*/
+stack_t *Create(size_t capacity, size_t element_size);
 void Push(stack_t* , const void*); 
 int IsEmpty(const stack_t*);
 void Pop(stack_t*);
+/*Showing without removing the top elemnt on stack*/
 void *Peek(const stack_t*);
+/*Returns number of element that currently in the stack*/
 size_t Size(const stack_t*);
 
 size_t Capacity(const stack_t*);

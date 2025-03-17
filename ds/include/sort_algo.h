@@ -9,8 +9,8 @@
 *
 ******************************************************************************/
 
-#ifndef __SORT_H__
-#define __SORT_H__
+#ifndef __SORT_ALGO_H__
+#define __SORT_ALGO_H__
 
 #include <stddef.h>
 /******************************************************************************
@@ -43,4 +43,4 @@ void RadixSort(int arr[], size_t size);
 
 
 
-#endif /*SORT_H*/
+#endif /*SORT_ALGO*/

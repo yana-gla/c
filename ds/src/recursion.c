@@ -1,7 +1,7 @@
 #include <string.h> /*for strncmp*/
 #include "recursion.h"
 
-
+/****************************  Fibonacci  *************************************/
 /*0 indicates error*/
 size_t FibonacciIterative(int element_index)
 {
@@ -38,7 +38,7 @@ size_t FibonacciRecrusive(int i)
 	return (FibonacciRecrusive(i-1) + FibonacciRecrusive(i - 2));
 }
 
-/****************************  FlipList  *****************************************/
+/****************************  FlipList  **************************************/
 Node *FlipList(Node *head)
 {
 	Node *new_head = NULL;
@@ -114,19 +114,6 @@ int Strcmp(const char *str1, const char *str2)
 	return Strcmp(++str1, ++str2);
 }
 
-/*char *Strcpy(char *dest, const char *src)*/
-/*{*/
-/*	*dest = *src;*/
-/*	*/
-/*	if ('\0' != *src)*/
-/*	{*/
-/*		Strcpy(dest+1, src+1);*/
-/*	}*/
-
-/*	return dest;*/
-/*}*/
-
-
 char *Strcpy(char *dest, const char *src)
 {
 	if ('\0' == *src)
@@ -152,10 +139,19 @@ char *Strcat(char *dest, const char *src)
 	return dest;
 }
 
+static char *StrstrHelper(const char *haystack, const char *needle, size_t needle_len);
 
 char *Strstr(const char *haystack, const char *needle)
 {
 	size_t needle_length =	Strlen(needle);
+
+	return StrstrHelper(haystack, needle, needle_length);
+}
+
+static char *StrstrHelper(const char *haystack,
+						 const char *needle,
+						 size_t needle_length)
+{
 	if ('\0' == *needle || 0 == strncmp(haystack, needle, needle_length))
 	{
 		return (char*)haystack;
@@ -167,8 +163,6 @@ char *Strstr(const char *haystack, const char *needle)
 	
 	return Strstr(haystack + 1, needle);
 }
-
-
 
 
 

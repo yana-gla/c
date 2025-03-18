@@ -4,7 +4,7 @@
 
 int FindElementCirSortedArray(int arr[], int size, int target)
 {
-	size_t l = 0, r = size-1, m = 0; /* l- left, r- right, m- middle*/
+	int l = 0, r = size-1, m = 0; /* l- left, r- right, m- middle*/
 	
 	while (l <= r)
 	{
@@ -19,7 +19,6 @@ int FindElementCirSortedArray(int arr[], int size, int target)
 		if (arr[l] <= arr[m])
 		{
 			if (target < arr[m] && target >= arr[l])
-			
 			{
 				r = m - 1;
 			}

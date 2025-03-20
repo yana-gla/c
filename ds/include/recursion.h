@@ -3,7 +3,7 @@
 *
 * Purpose:
 *   Implementation of recursive Fibonacci, Flip SLL, Stack sort and standard
-	String functions
+*	String functions
 *
 * Author:
 *   Yana Glazer

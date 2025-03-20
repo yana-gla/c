@@ -138,7 +138,6 @@ char *Strcat(char *dest, const char *src)
 	Strcat(dest + 1, src);
 	return dest;
 }
-
 static char *StrstrHelper(const char *haystack, const char *needle, size_t needle_len);
 
 char *Strstr(const char *haystack, const char *needle)

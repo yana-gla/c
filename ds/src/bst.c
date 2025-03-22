@@ -90,7 +90,7 @@ void BSTDestroy(bst_t* bst)
 }
 
 /******************************************************************************/
-/*insert- return parent node to attach to, find- return node of matched data*/
+/*insert- return parent node to attach to, find- return node of match data*/
 /*find perspective- search may not find data if the data isn't exist, will return 
 	leaf*/
 bst_itr_t BSTInsert(bst_t* bst, void* data)

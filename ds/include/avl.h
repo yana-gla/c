@@ -2,8 +2,10 @@
 * File: avl.h
 *
 * Purpose:
-*   Implement Binary Search Tree recursively
-	
+*   Implement Balanced Binary Search Tree recursively  (AVL)
+*	Balance: Height difference no more than one 
+*	O(log(n))- Insertion, Deletion, Search
+*	
 *
 * Author:
 *   Yana Glazer
@@ -18,6 +20,43 @@
 
 #include <stddef.h>  /*size_t*/
 
+
+
+/* avl_cmp_func - Comparator Function
+ * This user-defined function performs comparison between two items and used
+ * to determine ordering.
+ *
+ * Parameters:
+ *      first - reference to first item
+ *      second - reference to second item
+ * 
+ * Returns:
+ *      -1 - first item comes before second item
+ *       0 - first item has same value as second item
+ *      +1 - first item comes after second item
+ */
+typedef int (*avl_cmp_t)(const void* first, const void* second);
+
+/* AVL Action Function
+* User defined function which executes operation on a given element of the AVL.
+* Used in ForEach to perform defined operation on each element.
+* 
+* Params:
+* data_ref - reference to data of current node
+* params - reference to user-defined parameters
+*
+*
+* Returns:
+*		status:  0 - operation success
+*			   	non-zero - operation failed, and exit ForEach
+*
+* Time Complexity: O(1)
+* Space Complexity: O(1)
+ */
+typedef int(*avl_action_t)(void* data_ref, void* params);
+
+/******************************************************************************/
+/*enum for traversal order*/
 typedef enum
 {
     PRE_ORDER,
@@ -28,45 +67,10 @@ typedef enum
 
 typedef struct avl avl_t;
 
-/* avl_cmp_func - Comparator Function
- * This user-defined function performs comparison between two
- * items passed by reference, and is used to determine ordering
- * scheme/ranking of keys in AVL.
- *
- * Parameters:
- *      first - reference to first item
- *      second - reference to second item
- * 
- * Returns:
- *      -1 - first item comes before second item
- *        0 - first item has same value as second item
- *      +1 - first item comes after second item
- */
-typedef int (*avl_cmp_t)(const void* first, const void* second);
-
-
-
-/* avl_action_func - Action Function
- * User defined function that execute operation on a given element of the AVL.
- * Used in ForEach to perform the defined operation on each element, in-order.
- * 
- * Parameters:
- *      data_ref - reference to data/item
- *      params - reference to user-defined parameters
- * 
- * Returns:
- *      0 on successful operation
- *		non-zero values failed operation (and exit ForEach)
- */
-typedef int(*avl_action_t)(void* data_ref, void* params);
-
-
-
-/*******************************************************************************
+/****************************** API FUNCTION ***********************************
 * AVLCreate
 * creates new AVL
 * 
-*
 * Params:
 * 	cmp_func - compare function to determine ordering
 *
@@ -77,15 +81,14 @@ typedef int(*avl_action_t)(void* data_ref, void* params);
 * Time Complexity: O(1)
 * Space Complexity: O(1)
 *******************************************************************************/
-/* create new tree, Time Complexity: O(1) */
 avl_t* AVLCreate(avl_cmp_t cmp_func);
 
 /*******************************************************************************
 * AVLDestroy
-* Destroy AVL tree (post-order) 
+* Destroy AVL tree (post-order) and free allocated memory
 * 
 * Params:
-* 	avl_tree
+* 	avl_tree- pointer to an AVL tree
 *
 * Returns:
 * 	void
@@ -96,123 +99,135 @@ avl_t* AVLCreate(avl_cmp_t cmp_func);
 void AVLDestroy(avl_t* avl_tree);
 
 /*******************************************************************************
-* AVLCreate
-* creates new BST 
+* AVLRemov
+* Removes node pointed by data and frees memory
 * 
-*
 * Params:
-* 	cmp_func - compare function to determine ordering
+* 	avl_tree- pointer to an AVL tree
+*   data - A pointer to the data node to be removed
 *
 * Returns:
-* 	
+* 	void
 *
-* Time Complexity: 
-* Space Complexity:
+* Time Complexity: O(log(n))
+* Space Complexity: O(1)
+*
+*Note:
+	If data doesn't exist in the tree, the function does nothing
 *******************************************************************************/
-/* get data to remove, Time Complexity: O(log(n)) */
 void AVLRemove(avl_t* avl_tree, void* data);
 
 /*******************************************************************************
-* AVLCreate
-* creates new BST 
+* AVLInsert
+* Insert new data to the tree
 * 
-*
 * Params:
-* 	cmp_func - compare function to determine ordering
+* 	avl_tree- pointer to an AVL tree
+*   data - A pointer to the data node to be removed
 *
 * Returns:
-* 	
+*		status:  0 -  success
+*		non-zero - failed (alocation failure)
 *
-* Time Complexity: 
-* Space Complexity:
+* Time Complexity: O(log(n))
+* Space Complexity: O(1)
+*
+*Note:
+*	If data exist in the tree, the function doesnt nothing
+*	The tree Balanced after insertion	
 *******************************************************************************/
-/* insert data to right place in tree, return status (0 for success), Time Complexity: O(log(n)) */
 int AVLInsert(avl_t* avl_tree, void* data); 
 
 /*******************************************************************************
-* AVLCreate
-* creates new BST 
+* AVLHeight
+* Returns the height of the tree
 * 
-*
 * Params:
-* 	cmp_func - compare function to determine ordering
+* 	avl_tree- pointer to an AVL tree
 *
 * Returns:
-* 	
+*		height of the tree
 *
-* Time Complexity: 
-* Space Complexity:
+* Time Complexity:  O(1)
+* Space Complexity: O(1)
+*
+*Note:
+* Height of empty tree- 0, height of leaf is 1
 *******************************************************************************/
-/* return hight of tree, Time Complexity: O(1) */
 size_t AVLHeight(const avl_t* avl_tree);
 
 /*******************************************************************************
-* AVLCreate
-* creates new BST 
+* AVLCount
+* counts number of node in the tree
 * 
-*
 * Params:
-* 	cmp_func - compare function to determine ordering
+* 	avl_tree- pointer to an AVL tree
 *
 * Returns:
-* 	
+* number of node in the tree
 *
-* Time Complexity: 
-* Space Complexity:
+* Time Complexity: O(n)
+* Space Complexity: O(1)
+*
+*Note:
+* pre-order traversal
 *******************************************************************************/
-/* count items in the tree, (pre-order) Time Complexity: O(n) */
 size_t AVLCount(const avl_t* avl_tree);
 
 /*******************************************************************************
-* AVLCreate
-* creates new BST 
+* AVLIsEmpty
+* checks if the tree is empty
 * 
 *
 * Params:
-* 	cmp_func - compare function to determine ordering
+* 	avl_tree- pointer to an AVL tree
 *
 * Returns:
-* 	
+* 	1- empty
+*	0- not empty
 *
-* Time Complexity: 
-* Space Complexity:
+* Time Complexity: O(1)
+* Space Complexity: O(1)
 *******************************************************************************/
-/* return 1 if tree is empty, Time Complexity: O(1) */
 int AVLIsEmpty(const avl_t* avl_tree);
 
 /*******************************************************************************
-* AVLCreate
-* creates new BST 
+* AVLContains
+* checks if given data is in the tree
 * 
-*
 * Params:
-* 	cmp_func - compare function to determine ordering
+* 	avl_tree- pointer to an AVL tree
+*   data - A pointer to the data node to be removed
 *
 * Returns:
-* 	
+* 	pointer to data
+*	NULL- data is not found
 *
-* Time Complexity: 
-* Space Complexity:
+* Time Complexity: O(log(n))
+* Space Complexity: O(1)
 *******************************************************************************/
-/* find data in tree, return data if found, NULL if not ,Time Complexity: O(log(n)) */
 void* AVLContains(const avl_t* avl_tree, void* data); 
 
 /*******************************************************************************
-* AVLCreate
-* creates new BST 
+* AVLForEach
+* execute action on each data in the tree
 * 
-*
 * Params:
-* 	cmp_func - compare function to determine ordering
+*      avl_tree - pointer to an AVL tree
+*      action - user-defined function to apply to each data
+*      params - additional parameter to be passed to the action function
+*      order - traversal order (PRE_ORDER, IN_ORDER, POST_ORDER)
 *
 * Returns:
-* 	
+*		status: 0 - all operation done successfly
+*		non-zero - operation failed, and exit ForEach 
+* Time Complexity: O(n)
+* Space Complexity: O(1)
 *
-* Time Complexity: 
-* Space Complexity:
+*Note: 
+*	action function should'nt change ordering 
 *******************************************************************************/
-/* do action function on each node in tree with specified traversal, Time Complexity: O(n) 
- cant change the order in the action function */
+
 int AVLForEach(avl_t* avl_tree,
 			   avl_action_t action,
 			   void* params,
@@ -220,15 +235,3 @@ int AVLForEach(avl_t* avl_tree,
 
 #endif /* AVL */
 
-
-
-/*לא ללכתוב קוד כפול*/
-/*פסאודו קוד עמוק*/
-/*לבדוק ביצועים עם 100,000 צמתים*/
-/*שלבים במימוש*/
-/*א. עץ חיפוש בינארי רקורסיבי*/
-/*ב.1. הכנסה עם בלאנס*/
-/*ב.2. הוצאה עם בלאנס*/
-/*3. stress test*/
-
-/* Other notes: no code duplication */

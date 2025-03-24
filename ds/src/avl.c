@@ -181,7 +181,6 @@ int AVLForEach(avl_t* avl_tree,
 	return status;
 }
 
-
 /******************************************************************************/
 /*****************************  Static function  ******************************/
 static node_t *AVLInsertHelper(node_t *root, void* data, avl_cmp_t cmp_func, int *insertion_status)

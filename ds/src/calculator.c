@@ -1,5 +1,7 @@
 #include <math.h> /*pow*/
 #include <errno.h> /*errno*/
+#include <stdlib.h> /*strtod*/
+#include <ctype.h> /*isspace*/
 
 #include "stack.h"
 #include "calculator.h"
@@ -11,16 +13,13 @@
 
 /*typedef enum*/
 /*{*/
-/*    CALC_SUCCESS,*/
-/*    CALC_DIV_BY_ZERO,*/
-/*    CALC_SYNTAX_ERROR,*/
-/*    CALC_OUT_OF_BOUNDS,*/
-/*	CALC_STACK_OVERFLOW,*/
-/*	CALC_MEM_ALLOC_ERROR*/
-/*}calc_status_t;*/
-
-
-/*} calc_status_t; /* status of operation evaluation */*/
+/*    SUCCESS,*/
+/*    DIV_BY_ZERO,*/
+/*    SYNTAX_ERROR,*/
+/*    OUT_OF_BOUNDS,*/
+/*    MEMORY_FAULT,*/
+/*    STACK_OVER_FLOW*/
+/*} calc_status_t;*/
 
 /*states*/
 typedef enum
@@ -28,7 +27,7 @@ typedef enum
 	W4N, /*wait for number*/        /*0*/
 	W4O, /*wait for opertor*/      /*1*/
 /*	ACCEPT, /*end of string*/*/   
-	ERROR, /*invalid state*/       /*2*/
+	FINISH /*invalid state*/       /*2*/
 /*	NUM_STATES                    /*3*/*/
 }calc_state_t;
 
@@ -55,7 +54,7 @@ typedef struct
 
 /*LUT*/
 static tran_t transition_lut[NUM_STATES][ASCI_SIZE] = {0};
-static int prec_lut[ASCI_SIZE] = {0};
+static int prcdnt_lut[OPRND_SIZE][OPRND_SIZE] = {0};
 static calc_fp operation_lut[NUM_OPT] = {0};
 
 /*LUT initialization function*/
@@ -64,13 +63,126 @@ static void Init_prec_lut();
 static void Init_operation_lut();
 
 /*Calculation functions*/
-/*typedef double (*calc_fp)(double num1, double num2);*/
 static double Add(double num1, double num2);
 static double Subtract(double num1, double num2);
 static double Multiply(double num1, double num2);
 static double Divide(double num1, double num2);
-static double Power(double num1, double num2);
+static double Power(double base, double power);
 
+/*typedef calc_status_t (*handler_f)(char **str, stack_t *num_stack, stack_t *opr_stack);*/
+
+/*Handlers*/
+
+
+static calc_status_t HndlrGotNum(char **equation, stack_t *num_stack, stack_t *opr_stack)
+{
+	char *remain_eq = NULL;
+	calc_status_t status = SUCCESS;
+	errno = 0;
+	
+	double num = strtod(*equation, &remain_eq); /*Q*/
+	
+	/*error check*/
+	if (*equation == remain_eq) /*valid- .5 , invalid- . 5 */
+	{
+		status = SYNTAX_ERROR;
+	}
+	
+	if (ERANGE == errno)
+	{
+		status = OUT_OF_BOUND;
+	}
+	
+	Push(num_stack, &num); /*Q*/
+	*equation = remain_eq;
+	
+	(void)opr_stack;
+	
+	return status;
+}
+
+static HndlrTrap(char **equation, stack_t *num_stack, stack_t *opr_stack)
+{
+	(void)equation;
+	(void)num_stack;
+	(void)opr_stack;
+	return SYNTAX_ERROR;
+}
+
+/*open parentheses*/
+static HndlrOpenParen(char **equation, stack_t *num_stack, stack_t *opr_stack)
+{
+	Push(opr_stack, *equation); /*pushing '(' */     /*Q*/
+	++(*equation);
+
+	(void)num_stack;
+		
+	return SUCCESS;
+}
+
+
+/*static HndlrOprnd(char **equation, stack_t *num_stack, stack_t *opr_stack)*/
+/*{*/
+/*	char curr_oprnd = **equation;*/
+/*	char prev_oprnd = *(char*)(Peek(opr_stack));*/
+/*	*/
+/*	prcdnt_lut[curr_oprnd][prev_oprnd]( params );*/
+/*	*/
+/*	++(*equation);*/
+/*	*/
+/*}*/
+
+/*static HndlrCalc(char **equation, stack_t *num_stack, stack_t *opr_stack)*/
+/*{*/
+/*	double num1 = 0, num2 = 0, result = 0;*/
+/*	char oprt = *(char*)Peek(opr_stack);*/
+/*	Pop(opr_stack);*/
+/*	*/
+/*	num2 = *(double*)Peek(num_stack);*/
+/*	Pop(num_stack);*/
+/*	*/
+/*	num1 = *(double*)Peek(num_stack);*/
+/*	Pop(num_stack);*/
+/*	*/
+/*	result = operation_lut[oprt](num1)(num2);*/
+/*	*/
+/*	Push(num_stack, &result);*/
+/*	*/
+/*}*/
+
+
+/*static HndlrPushOprnd(char **equation, stack_t *num_stack, stack_t *opr_stack)*/
+/*{*/
+/*	char oprt = **equation;*/
+/*	Push(opr_stack, *equation);*/
+/*	*/
+/*	(void)num_stack;*/
+/*}*/
+
+
+static HndlrFrwrd(char **equation, stack_t *num_stack, stack_t *opr_stack)
+
+/*W4O space*/
+static HndlrFrwrd(char **equation, stack_t *num_stack, stack_t *opr_stack)
+{
+	++(*equation);
+	
+	(void)num_stack;
+	(void)opr_stack;
+	
+	return SUCCESS;
+}
+
+/* /0 /n */
+static HndlrCalcAll(char **equation, stack_t *num_stack, stack_t *opr_stack)
+{
+	
+}
+
+static HndlrCloseParen(char **equation, stack_t *num_stack, stack_t *opr_stack)
+{
+	
+}
 
 /*stack_t *Create(size_t capacity, size_t element_size)*/
 status_t Calculate(double *result, const char *str_calc)
@@ -125,6 +237,10 @@ static double Multiply(double num1, double num2)
 }
 static double Divide(double num1, double num2)
 {
+	if (0 == num2)
+	{
+		
+	}
 	return (num1 / num2);
 }
 static double Power(double num1, double num2)

@@ -3,8 +3,6 @@
 #include <string.h> /*memset*/
 #include "doubly_ll.h"
 
-
-
 typedef struct node node_t;
 
 struct node

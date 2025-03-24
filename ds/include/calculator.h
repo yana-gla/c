@@ -1,17 +1,51 @@
-
-/*legal operands 0 1 2 3 4 5 6 7 8 9 . e? */
-/*legal operation -, +, *, /, ^, ( ) */
-/*spaces between num/ operand discarded, spaces within a number cause error*/
-/*Time complecity O()*/
-
+/*******************************************************************************
+* File: calculator.h
+*
+* Purpose:
+*   Implement Calculator that supports: +, -, *, /, ^, ( ).
+	
+*
+* Author:
+*   Yana Glazer
+* Code reviewd by:
+*   __________
+*
+*Date: 22/03/2025
+*Last Update: --/--/----
+*******************************************************************************/
+#ifndef __CALCULATOR_H__
+#define __CALCULATOR_H__
 
 typedef enum
 {
-    CALC_SUCCESS,
-    CALC_SYNTAX_ERROR,
-    CALC_DIV_BY_ZERO,
-    CALC_OUT_OF_BOUNDS
+    SUCCESS,
+    DIV_BY_ZERO,
+    SYNTAX_ERROR,
+    OUT_OF_BOUNDS,
+    MEMORY_FAULT,
+    STACK_OVER_FLOW
 } calc_status_t; /* status of operation evaluation */
 
+
+
+/*******************************************************************************
+* Calculate
+* x
+* 
+* Params:
+* 	x
+*   x
+*
+* Returns:
+* 	x
+*
+* Time Complexity: O(n)
+* Space Complexity: O(1)
+*
+*Note:
+*	x
+*******************************************************************************/
 status_t Calculate(double *result, const char *str);
 
+
+#endif

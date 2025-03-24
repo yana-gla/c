@@ -17,7 +17,7 @@ typedef struct stack stack_t;
 /*creates new stack, capacity is number of elemnts in stack,
  element size is size of single elemnt*/
 stack_t *Create(size_t capacity, size_t element_size);
-void Push(stack_t* , const void*); 
+void Push(stack_t* stack, const void* data); 
 int IsEmpty(const stack_t*);
 void Pop(stack_t*);
 /*Showing without removing the top elemnt on stack*/

@@ -8,10 +8,10 @@
 * Author:
 *   Yana Glazer
 * Code reviewd by:
-*   __________
+*   Dvir Goldhammer
 *
 *Date: 18/03/2025
-*Last Update: --/--/----
+*Last Update: 25/03/2025
 *******************************************************************************/
 #include <stdlib.h> /*malloc*/
 #include <assert.h> /*assert*/
@@ -69,6 +69,7 @@ static node_t *Balance(node_t *node);
 static node_t *Rotate(node_t *node, avl_child_t side);
 /*Debug Helper function*/
 static void PrintTree(node_t *root, int level);
+static node_t *Sequential(node_t *node, avl_child_t side);
 /******************************************************************************/
 avl_t* AVLCreate(avl_cmp_t cmp_func)
 {

@@ -22,19 +22,20 @@
 #define BLUE "\x1b[1;34m"
 #define UNFORMAT "\x1b[1;0m"
 
-#define DICT_PATH "/usr/share/dict/words"
-#define MAX_WORD_LEN 128
+#define DICTIONARY "/usr/share/dict/words"
+#define LONGEST_WORD 50 /*45 = pneumonoultramicroscopicsilicovolcanoconiosis*/
 #define SIZE 10
+#define DICT_HT_SIZE 1000
 
 static int result = 0;
 
-/*static void TestSpellChecker();*/
-/*static void SpellChecker(char* str);*/
-/*static int SpellCheckerInsert(ht_table_t* tbl);*/
-/*static void SpellCheckerFind(ht_table_t* tbl, char* str);*/
-/*static int FreeWords(void* value, void* params);*/
-/*static size_t DictHashFunc(const void* key);*/
-/*static int DictMatchFunc(const void* key1, const void* key2);*/
+static size_t HashDict(const void *string);
+static int MatchDict(const void *key1, const void *key2);
+static int LoadDict(ht_table_t *ht_dict);
+static int FreeWord(void *word, void * params);
+static void SpellCheckerWrpr(char *word);
+static void SpellChecker(ht_table_t* ht_dict, char *word);
+static void TestSpellChecker();
 
 static void TestCreateAndDestroy();
 static void TestInsertAndCount();
@@ -67,7 +68,7 @@ int main(void)
 		printf(RED "\tFAILED!\n" UNFORMAT);
 	}
 	
-/*	TestSpellChecker();*/
+	TestSpellChecker();
 	return (0);
 }
 
@@ -286,116 +287,138 @@ static int Add(void* value, void* param)
     return (0);
 }
 
-/*------------Spell Checker---------------------------------*/
-/*
-static void TestSpellChecker()
+/******************************** Spell Checker *******************************/
+static size_t HashDict(const void *string) /*djb2 algo from http://www.cse.yorku.ca/~oz/hash.html*/
 {
-	char str[MAX_WORD_LEN];
+    size_t hash = 5381;
+    char *runner = (char*)string;
+	char asci_num = 0;
 	
-	printf("Enter String:\n");
-	scanf("%s",str);
-	
-	SpellChecker(str);
-}
-
-static void SpellChecker(char* str)
-{
-    ht_table_t* tbl = NULL;
-    
-    tbl = HTCreate(DictMatchFunc, DictHashFunc, 256);
-    if (NULL == tbl)
+    while ('\0' != *runner)
     {
-        printf("Error memory allocation\n");
-        return;
-    }
-    
-    if(1 != SpellCheckerInsert(tbl))
-    {
-    	SpellCheckerFind(tbl,str);
-    }
-	
-	HTForEach(tbl, FreeWords, NULL);
-	HTDestroy(tbl);
- 
-    return;
+    	asci_num = *runner;
+    	hash = ((hash << 5) + hash) + asci_num; /* hash * 33 + c */
+    	++runner;
+    } 
+    return hash;   
 }
+/*the magic of number 33 (why it works better than many other constants,
+     prime or not) has never been adequately explained */
 
-static int SpellCheckerInsert(ht_table_t* tbl)
-{
-	char word[MAX_WORD_LEN];
 
-	FILE *file = fopen(DICT_PATH, "r");
-    if (NULL == file)
-    {
-        printf("Error opening file\n");
-        return (1);
-    }
-    
-    while (NULL != fgets(word, MAX_WORD_LEN, file))
-    {
-    	size_t len = strlen(word);
-    	
-    	char* word_copy = (char*)malloc(len + 1);
-    	if(NULL == word_copy)
-    	{
-    		printf("Error memory allocation\n");
-    		fclose(file);
-    		return (1);
-    	}
-    	
-    	if (len > 0 && word[len-1] == '\n') 
-    	{
-        	word[len-1] = '\0';
-    	}
-    	
-    	strcpy(word_copy,word);
-
-	    if(0 != HTInsert(tbl, word_copy, word_copy))
-	    {
-	    	printf("Insertion Failed\n");
-    		fclose(file);
-    		return (1);
-	    }
-    }
-    
-    fclose(file);
-    
-    return (0);
-}
-
-static void SpellCheckerFind(ht_table_t* tbl, char* str)
-{
-	char* found_str = (char*)HTFind(tbl, str);
-    
-    if(NULL != found_str)
-    {
-    	printf("%s - In the dictionary!\n", str);
-    }
-    else
-    {
-    	printf("%s - Not In the dictionary!\n", str);
-    }
-}
-
-static int FreeWords(void* value, void* params)
-{
-	free (value);
-	(void) params;
-	return (0);
-}
-
-static size_t DictHashFunc(const void* key)
-{
-	return ((size_t)*(char*)key);
-}
-
-static int DictMatchFunc(const void* key1, const void* key2)
+static int MatchDict(const void *key1, const void *key2)
 {
 	return (0 == strcmp((char*)key1, (char*)key2));
 }
 
+static int LoadDict(ht_table_t *ht_dict)
+{
+	FILE *dictionary = NULL;
+	char buff_word[LONGEST_WORD] = "";
+	char *hash_word = NULL;
+	int status = 0;
+	
+	dictionary = fopen(DICTIONARY, "r");
+	if (NULL == dictionary)
+	{
+		printf("Error opening file\n");
+		return 1;
+	}
+	
+	while (NULL != fgets(buff_word, LONGEST_WORD, dictionary))
+	{
+		size_t len = strlen(buff_word);
+	
+    	/*replace ending new line with null terminator*/
+    	if (len > 0 && '\n' == buff_word[len-1])
+    	{
+    		buff_word[len-1] = '\0';
+    	}
+    	len = strlen(buff_word);
+    	
+    	hash_word = (char*)malloc(len + 1);
+		if(NULL == hash_word)
+    	{
+    		printf("Error malloc\n");
+    		fclose(dictionary);
+    		return 1;
+    	}
+    	
+    	/*copy to hash_word*/
+    	strcpy(hash_word, buff_word);
+		status =  HTInsert(ht_dict, hash_word, hash_word);
+		
+		if (0 != status)
+		{
+			printf("Failed Hash Insertion\n");
+			fclose(dictionary);
+			free(hash_word);
+			
+			return 1;
+		}
+	}
+	
+	fclose(dictionary);
+	
+	return 0;
+}
 
-*/
+static int FreeWord(void *word, void * params)
+{
+	free(word);
+	
+	(void)params;
+	
+	return 0;
+}
+
+static void SpellCheckerWrpr(char *word)
+{
+	/*create hash dict*/
+	ht_table_t *ht_dict = HTCreate(MatchDict, HashDict, DICT_HT_SIZE);
+	if (NULL == ht_dict)
+    {
+        printf("Error HTCreate\n");
+        return;
+    }
+    
+    /*init hash dict*/
+    if(1 != LoadDict(ht_dict))
+    {
+    	SpellChecker(ht_dict, word);
+    }
+    
+    /*free words*/
+    HTForEach(ht_dict, FreeWord, NULL);
+	HTDestroy(ht_dict);
+}
+
+
+static void SpellChecker(ht_table_t* ht_dict, char *word)
+{
+	void *result = NULL;
+	
+	result = HTFind(ht_dict, word);
+	
+	if (NULL == result)
+	{
+		printf("Word is *not* in the dictionary.\n");
+	}
+	else 
+	{
+		printf("Word is in the dictionary.\n");
+	}
+}
+
+static void TestSpellChecker()
+{
+	char str[LONGEST_WORD];
+	
+	printf("Enter String:\n");
+	scanf("%s",str);
+	
+	SpellCheckerWrpr(str);
+}
 
 
 

@@ -2,6 +2,11 @@
 #include <string.h> /*memset*/
 #include "sort_algo.h"
 
+
+
+
+
+
 /******************************************************************************/
 static void Swap(int *a, int *b);
 static int FindMax(int arr[], size_t size);
@@ -211,3 +216,71 @@ static void CountingSortDigits(int arr[], size_t size, int digits_num)
 	memcpy(arr, output_array, size * sizeof(int));
 	free(output_array);
 }
+
+/******************************************************************************/
+static void Merge(int arr_l[], size_t nl, int arr_r[], size_t nr, int helper_arr[])
+{
+	size_t il = 0, ir = 0, ih = 0;
+	
+	while (il < nl && ir < nr)
+	{
+		helper_arr[ih++] = (arr_l[il] < arr_r[ir]) ? arr_l[il++] : arr_r[ir++];
+	}
+	
+	/*left elemnts*/
+	while (il < nl)
+	{
+		helper_arr[ih++] = arr_l[il++];
+	}
+	while (ir < nr)
+	{
+		helper_arr[ih++] = arr_r[ir++];
+	}
+
+}
+static void HelperMergeSort(int *arr, size_t num_elements, int helper_arr[])
+{
+	size_t left = num_elements/2, right = num_elements - left; /*odd & even*/
+	
+	if (num_elements <= 1) /*one item array is sorted*/
+	{
+		return;
+	}
+	HelperMergeSort(arr, left, helper_arr); /*calling left part*/
+	HelperMergeSort(arr + left, right, helper_arr); /*calling right part*/ 
+	Merge(arr, left, (arr + left), right, helper_arr);		
+	memcpy(arr, helper_arr, num_elements * sizeof(int));
+	
+}
+
+int MergeSort(int *arr_to_sort, size_t num_elements)
+{
+	int *helper_arr = (int*)malloc(num_elements *sizeof(int));
+	if (NULL == helper_arr)
+	{
+		return -1;
+	}
+	HelperMergeSort(arr_to_sort, num_elements, helper_arr);
+	free(helper_arr);
+	return 0;
+}
+
+
+/*void Qsort(void base[], size_t left, size_t right, size_t elemnt_size, compare_func compare)*/
+/*{*/
+/*	*/
+/*}*/
+/*               */
+
+
+
+
+
+
+
+
+
+
+
+
+

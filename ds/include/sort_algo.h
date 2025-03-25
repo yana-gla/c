@@ -13,6 +13,11 @@
 #define __SORT_ALGO_H__
 
 #include <stddef.h>
+
+
+
+/*cmp func for q_sort*/
+typedef int(*compare_func)(const void*, const void*);
 /******************************************************************************
 * BubbleSort
 * comparison-based
@@ -40,6 +45,9 @@ void InsertionSort(int arr[], size_t size);
 void CountingSort(int arr[], size_t size);
 
 void RadixSort(int arr[], size_t size);
+
+
+int MergeSort(int *arr_to_sort, size_t num_elements);
 
 
 

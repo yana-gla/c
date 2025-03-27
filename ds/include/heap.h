@@ -58,6 +58,8 @@ int HeapIsEmpty(const heap_t* heap);
 size_t HeapSize(const heap_t* heap);
 
 /* O(1) */
+
+
  
 #endif /*HEAP*/
 

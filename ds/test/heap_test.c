@@ -340,6 +340,7 @@ static int TestHeapRemove(void)
 	removed_value = HeapRemove(heap, MatchInts, &target_value);
 	status |= TEST_CHECK(&values[4] == removed_value,
 					"HeapRemove should return pointer to removed value");
+
 	status |= TEST_CHECK(n_values - 1 == HeapSize(heap),
 					"HeapSize should decrease after HeapRemove");
 
@@ -354,6 +355,7 @@ static int TestHeapRemove(void)
 	/* Test remove highest priority element */
 	target_value = 2;  /* Highest priority value */
 	removed_value = HeapRemove(heap, MatchInts, &target_value);
+
 	status |= TEST_CHECK(&values[3] == removed_value,
 					"HeapRemove should return pointer to highest priority value");
 	status |= TEST_CHECK(n_values - 2 == HeapSize(heap),

@@ -265,14 +265,41 @@ int MergeSort(int *arr_to_sort, size_t num_elements)
 	return 0;
 }
 
+static void SwapVoid(void *a, void *b, size_t element_size)
+{
+	void *temp = malloc(element_size);
+	if (NULL == temp)
+	{
+		return;
+	}
+	memcpy(temp, a, element_size);
+	memcpy(a, b, element_size);
+	memcpy(b, temp, element_size);	
+	free(temp);
+}
 
-/*void Qsort(void base[], size_t left, size_t right, size_t elemnt_size, compare_func compare)*/
-/*{*/
-/*	*/
-/*}*/
-/*               */
+void QuickSort(void arr[], size_t arr_size, size_t element_size, compare_func compare)
+{
+	size_t p = 0;
+	
+	if (n <= 1)
+	{
+		return;
+	}
+	
+	p = Partition(arr, arr_size, elem_size, cmp_func);
+	
+}
+            
 
-
+static size_t Partition(void arr[], size_t l, size_t r, size_t element_size, compare_func compare)
+{
+	size_t pivot = r;
+	
+	size_t 
+	
+	
+}
 
 
 

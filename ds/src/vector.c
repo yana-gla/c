@@ -63,7 +63,12 @@ void VectorDestroy(vector_t* vector)
 /*Does'nt increase size*/
 void* VectorAccessElement(const vector_t* vector, size_t index)
 {
-	assert(NULL != vector && index < vector->size);
+	assert(NULL != vector);
+	
+	if (index >= vector->size)
+	{
+		return NULL;
+	}
 	
 	return ((char*)vector->head_vector + (index * vector->element_size));
 }

@@ -38,14 +38,12 @@ static int HelperBinRecSearch(int arr[], int target, int l, int r)
 	{
 		return m;
 	}
-	else if (target > arr[m])
+	if (target > arr[m])
 	{
 		return HelperBinRecSearch(arr, target, m + 1, r);
 	}
-	else 
-	{
-		return HelperBinRecSearch(arr, target, l, m-1);
-	}
+	
+	return HelperBinRecSearch(arr, target, l, m-1);
 }
 
 int BinRecSearch(int arr[], int size, int target)

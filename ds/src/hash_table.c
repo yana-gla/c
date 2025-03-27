@@ -75,9 +75,6 @@ ht_table_t* HTCreate(ht_match_func_t match_func,
 	}
 	
 	/*Init Fields*/
-	table->hash_func = hash_func;
-	table->match_func = match_func;
-	table->capacity = capacity;
 	if (0 != InitBuckets(table)) /*failure in creating dll lists*/
 	{
 		memset(table, 0, sizeof(ht_table_t));
@@ -86,6 +83,9 @@ ht_table_t* HTCreate(ht_match_func_t match_func,
 		
 		return NULL;
 	}
+	table->hash_func = hash_func;
+	table->match_func = match_func;
+	table->capacity = capacity;
 	
 	return table;
 }
@@ -113,7 +113,6 @@ int HTInsert(ht_table_t* table, void* key, void* value)
 	
 	assert(NULL != table);
 	assert(NULL != key);
-	assert(NULL != value);
 	
 	item = CreateItem(key, value);
 	if (NULL == item)

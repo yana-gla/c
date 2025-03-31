@@ -2,34 +2,20 @@
 #include <string.h> /*memset*/
 #include "sort_algo.h"
 
-
-
-
-
+#define GET_ELEMENT(arr, index, element_size) (((char*)arr) + (index*element_size))
 
 /******************************************************************************/
+static int Bubble(int arr[], size_t size);
 static void Swap(int *a, int *b);
 static int FindMax(int arr[], size_t size);
 static void CountingSortDigits(int arr[], size_t size, int digits_num);
+static void QuickSortHelper(void *arr, size_t start, size_t end, size_t element_size, compare_func compare);
+static size_t Partition(void *arr, size_t start, size_t end, size_t element_size, compare_func compare);
+static void SwapVoid(void *a, void *b, size_t element_size);
+static void HelperMergeSort(int *arr, size_t num_elements, int helper_arr[]);
+static void Merge(int arr_l[], size_t nl, int arr_r[], size_t nr, int helper_arr[]);
+static void SwapSmallest(int arr[], size_t size);
 /******************************************************************************/
-/*returns flag if there was a swap or not*/
-static int Bubble(int arr[], size_t size)
-{
-	size_t i = 0;
-	int swapped = 0;
-	
-	for (i = 0; i < size - 1; ++i)
-	{
-		if (arr[i] > arr[i+1])
-		{
-			Swap(&arr[i], &arr[i+1]);
-			swapped = 1;
-		}
-	}
-	
-	return swapped;
-}
-
 void BubbleSort(int arr[], size_t size)
 {
 	int not_sorted = 1;
@@ -40,24 +26,6 @@ void BubbleSort(int arr[], size_t size)
 	}
 }
 /******************************************************************************/
-static void SwapSmallest(int arr[], size_t size)
-{
-	/*set in the begining i_min to i=0*/
-	size_t i_min = 0, i = 1;
-	
-	/*search minimum element*/
-	for (i = 1; i < size ; ++i)
-	{
-		if (arr[i] < arr[i_min])
-		{
-			i_min = i;
-		}
-	}
-	
-	/*place smallest element at the begining*/
-	Swap(arr, arr+i_min);
-}
-
 void SelectionSort(int arr[], size_t size)
 {
 	size_t i = 0;
@@ -136,6 +104,7 @@ void CountingSort(int arr[], size_t size)
 	free(count_array);
 	free(output_array);
 }
+
 /******************************************************************************/
 void RadixSort(int arr[], size_t size)
 {
@@ -149,7 +118,63 @@ void RadixSort(int arr[], size_t size)
 	}
 }
 
+/******************************************************************************/
+int MergeSort(int *arr_to_sort, size_t num_elements)
+{
+	int *helper_arr = (int*)malloc(num_elements *sizeof(int));
+	if (NULL == helper_arr)
+	{
+		return -1;
+	}
+	HelperMergeSort(arr_to_sort, num_elements, helper_arr);
+	free(helper_arr);
+	return 0;
+}
 
+/******************************************************************************/
+void QuickSort(void *arr, size_t arr_size, size_t element_size, compare_func compare)
+{
+	QuickSortHelper(arr, 0, arr_size - 1, element_size, compare);
+}
+/******************************************************************************/
+
+
+/*******************************  Static function  ****************************/
+/*returns flag if there was a swap or not*/
+static int Bubble(int arr[], size_t size)
+{
+	size_t i = 0;
+	int swapped = 0;
+	
+	for (i = 0; i < size - 1; ++i)
+	{
+		if (arr[i] > arr[i+1])
+		{
+			Swap(&arr[i], &arr[i+1]);
+			swapped = 1;
+		}
+	}
+	
+	return swapped;
+}
+/******************************************************************************/
+static void SwapSmallest(int arr[], size_t size)
+{
+	/*set in the begining i_min to i=0*/
+	size_t i_min = 0, i = 1;
+	
+	/*search minimum element*/
+	for (i = 1; i < size ; ++i)
+	{
+		if (arr[i] < arr[i_min])
+		{
+			i_min = i;
+		}
+	}
+	
+	/*place smallest element at the begining*/
+	Swap(arr, arr+i_min);
+}
 /******************************************************************************/
 static void Swap(int *a, int *b)
 {
@@ -157,6 +182,7 @@ static void Swap(int *a, int *b)
 	*a = *b;
 	*b = temp;
 }
+
 /******************************************************************************/
 static int FindMax(int arr[], size_t size)
 {
@@ -173,8 +199,8 @@ static int FindMax(int arr[], size_t size)
 	
 	return max;
 }
-/******************************************************************************/
 
+/******************************************************************************/
 static void CountingSortDigits(int arr[], size_t size, int digits_num)
 {
 	size_t i = 0;
@@ -238,6 +264,7 @@ static void Merge(int arr_l[], size_t nl, int arr_r[], size_t nr, int helper_arr
 	}
 
 }
+
 static void HelperMergeSort(int *arr, size_t num_elements, int helper_arr[])
 {
 	size_t left = num_elements/2, right = num_elements - left; /*odd & even*/
@@ -253,18 +280,7 @@ static void HelperMergeSort(int *arr, size_t num_elements, int helper_arr[])
 	
 }
 
-int MergeSort(int *arr_to_sort, size_t num_elements)
-{
-	int *helper_arr = (int*)malloc(num_elements *sizeof(int));
-	if (NULL == helper_arr)
-	{
-		return -1;
-	}
-	HelperMergeSort(arr_to_sort, num_elements, helper_arr);
-	free(helper_arr);
-	return 0;
-}
-
+/******************************************************************************/
 static void SwapVoid(void *a, void *b, size_t element_size)
 {
 	void *temp = malloc(element_size);
@@ -278,36 +294,50 @@ static void SwapVoid(void *a, void *b, size_t element_size)
 	free(temp);
 }
 
-void QuickSort(void arr[], size_t arr_size, size_t element_size, compare_func compare)
+static void QuickSortHelper(void *arr, size_t start, size_t end, size_t element_size, compare_func compare)
 {
-	size_t p = 0;
+	size_t pivot_idx = 0;
 	
-	if (n <= 1)
+	if (end <= start) /*array of size 1 is sorted*/
 	{
 		return;
 	}
 	
-	p = Partition(arr, arr_size, elem_size, cmp_func);
+	pivot_idx = Partition(arr, start, end, element_size, compare);
 	
+	if (pivot_idx > start)
+	{
+		 /*Recursively sort [start, pivot_index)*/
+		QuickSortHelper(arr, start, pivot_idx - 1, element_size, compare);
+	}
+	
+	
+	/*Recursively sort [pivot_index + 1, end) */
+	QuickSortHelper(arr, pivot_idx + 1, end, element_size, compare);
 }
-            
-
-static size_t Partition(void arr[], size_t l, size_t r, size_t element_size, compare_func compare)
+       
+static size_t Partition(void *arr, size_t start, size_t end, size_t element_size, compare_func compare)
 {
-	size_t pivot = r;
+	size_t pivot = end ; /*pivot is the last element*/
+	void *pivot_ref = GET_ELEMENT(arr, pivot, element_size);
+	void *curr_ref = NULL, *i_ref = NULL;
+	size_t i = start, j = start; /*j runs on all the array, i is the index of all the elemnts which smaller than pivot*/
 	
-	size_t 
+	for (j = start ; j < end ; ++j)
+	{
+		curr_ref = GET_ELEMENT(arr, j, element_size);
+		/*if curr is smaller than pivot swap*/
+		if (compare(curr_ref, pivot_ref) < 0) 
+		{
+			i_ref = GET_ELEMENT(arr, i, element_size);
+			SwapVoid(curr_ref, i_ref, element_size);
+			++i;
+		}
+	}
+	/*move pivot to the right place*/
+	SwapVoid(pivot_ref, 
+			 GET_ELEMENT(arr, i, element_size), element_size);
 	
-	
+	return i;
 }
-
-
-
-
-
-
-
-
-
-
-
+/******************************************************************************/

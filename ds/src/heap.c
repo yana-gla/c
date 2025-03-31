@@ -1,3 +1,18 @@
+/*******************************************************************************
+* File: heap.c
+*
+* Purpose:
+*   Implement Heap DS
+	
+*
+* Author:
+*   Yana Glazer
+* Code reviewd by:
+*   Sharon Salman
+*
+*Date: 27/03/2025
+*Last Update: 30/03/2025
+*******************************************************************************/
 #include <stdlib.h> /*malloc*/
 #include <assert.h> /*assert*/
 #include <string.h> /*memset*/
@@ -89,7 +104,7 @@ int HeapPush(heap_t* heap, void* data)
 	
 	assert (NULL != heap);
 	
-	/*insert to left most position*/
+	/*insert to left most position in the tree = last element in array*/
 	if (0 != VectorPushBack(heap->vector, &data)) /*index = size-1*/
 	{
 		return -1;
@@ -140,7 +155,8 @@ void* HeapRemove(heap_t* heap,
 		return found_ptr;
 	}
 
-	if(found_idx> 0 && CompareIndxs(heap, found_idx, PARENT_IDX(found_idx)) < 0)
+	if((found_idx > 0) &&
+		 (CompareIndxs(heap, found_idx, PARENT_IDX(found_idx)) < 0))
 	{
 		HeapifyUp(heap, found_idx);
 	}
@@ -205,13 +221,13 @@ static void HeapifyDown(heap_t *heap, size_t root_idx)
 	void **child_cand = NULL, **root = NULL;
 	
 	/*if root has left child*/
-	if (child_l_idx <= LAST_IDX(heap->vector) &&
-				 CompareIndxs(heap, child_l_idx, child_cand_idx) < 0 )
+	if ((child_l_idx <= LAST_IDX(heap->vector)) &&
+				 (CompareIndxs(heap, child_l_idx, child_cand_idx) < 0))
 	{
 		child_cand_idx = child_l_idx;
 	}
-	if (child_r_idx <= LAST_IDX(heap->vector) &&
-				 CompareIndxs(heap, child_r_idx, child_cand_idx) < 0 )
+	if ((child_r_idx <= LAST_IDX(heap->vector)) &&
+				 (CompareIndxs(heap, child_r_idx, child_cand_idx) < 0))
 	{
 		child_cand_idx = child_r_idx;
 	}
@@ -238,8 +254,8 @@ static size_t FindIdx(heap_t *heap, int (*heap_match_func)(const void* data, voi
 {
 	size_t i = FIRST_IDX;
 	
-	for (i = FIRST_IDX; i < HeapSize(heap) && 
-				1 != heap_match_func(*GetElement(heap->vector, i), params); ++i);
+	for (i = FIRST_IDX; (i < HeapSize(heap)) && 
+				(1 != heap_match_func(*GetElement(heap->vector, i), params)); ++i);
 	
 	return i;
 }

@@ -28,4 +28,4 @@ size_t Size(const stack_t*);
 size_t Capacity(const stack_t*);
 void Destroy(stack_t*); 
 
-#endif /*closing STACK_H */
+#endif /* STACK_H */

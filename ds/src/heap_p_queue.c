@@ -1,11 +1,11 @@
 #include <stddef.h> /*size_t*/
 #include <assert.h> /*assert*/
 #include <stdlib.h> /*malloc*/
-#include "sorted_ll.h" /*own header for sotred list implementation*/
-#include "p_queue.h" /*own header*/
+#include "heap.h" /*own header*/
+#include "heap_p_queue.h" /*own header*/
 
 struct p_queue{
-	srt_ll_t *list;
+	heap_t *heap;
 };
 
 p_queue_t *PQCreate(cmp_func_t cmp_func)
@@ -20,8 +20,8 @@ p_queue_t *PQCreate(cmp_func_t cmp_func)
 		return NULL;
 	}
 	
-	p_queue->list = SrtLLCreate(cmp_func);
-	if(NULL == p_queue->list)
+	p_queue->heap= HeapCreate(cmp_func);
+	if(NULL == p_queue->heap)
 	{
 		free(p_queue);
 		p_queue = NULL;
@@ -35,8 +35,8 @@ void PQDestroy(p_queue_t *p_queue)
 {
 	assert(NULL != p_queue);
 	
-	SrtLLDestroy(p_queue->list);
-	p_queue->list = NULL; /*like memset*/
+	HeapDestroy(p_queue->heap);
+	p_queue->heap= NULL; /*like memset*/
 	/*memset(p_queue, 0, sizeof(p_queue_t));*/
 	
 	free(p_queue);
@@ -46,7 +46,7 @@ void PQDestroy(p_queue_t *p_queue)
 int PQIsEmpty(const p_queue_t* p_queue)
 {
 	assert(NULL != p_queue);
-	return SrtLLIsEmpty(p_queue->list);
+	return HeapIsEmpty(p_queue->heap);
 }
 
 /*Remove single element matching (function) param.
@@ -54,51 +54,39 @@ int PQIsEmpty(const p_queue_t* p_queue)
  according priority*/
 void *PQRemove(p_queue_t *p_queue, is_match_t is_match, void *param)
 {
-	srt_itr_t itr = {0};
-	void *data = NULL;
-	
 	assert (NULL != p_queue);
 	assert (NULL != is_match);
 	
-	itr = SrtLLFindIf(SrtLLItrBegin(p_queue->list), SrtLLItrEnd(p_queue->list), is_match, (void*)param);
-	/*if SrtLLFindIf didn't find it return tail and there is nothing to remove*/
-	if (SrtLLItrIsEqual(itr, SrtLLItrEnd(p_queue->list)))
-	{
-		return NULL;
-	}
-	
-	data = SrtLLGetData(itr);
-	SrtLLRemove(itr);
-	
-	return data;
+	return HeapRemove(p_queue->heap, is_match, param);
 }
 
 /*When success returns 0, O.W 1*/
-/*when sorted list fail to insert, it returns itr to last node*/
 int PQEnqueue(p_queue_t *p_queue, void *data)
 {
-	srt_itr_t itr = {0};
 	assert (NULL != p_queue);
-	itr = SrtLLInsert(p_queue->list, data);
-	return SrtLLItrIsEqual(itr, SrtLLItrEnd(p_queue->list));
+	
+	return HeapPush(p_queue->heap, data);
 }
 
 void PQDequeue(p_queue_t* p_queue)
 {
-	assert(p_queue);
-	SrtLLPopFront(p_queue->list);
+	assert (NULL != p_queue);
+
+	HeapPop(p_queue->heap);
 }
 
 void *PQPeek(const p_queue_t* p_queue)
 {
 	assert(NULL != p_queue);
-	return SrtLLGetData(SrtLLItrBegin(p_queue->list));
+
+	return HeapPeek(p_queue->heap);
 }
 
 size_t PQCount(const p_queue_t* p_queue)
 {
 	assert(NULL != p_queue);
-	return SrtLLCount(p_queue->list);
+	
+	return HeapSize(p_queue->heap);
 }
 /*Remove all elemnts but keeps the queue*/
 void PQClear(p_queue_t *p_queue)

@@ -1,11 +1,8 @@
 /*
 *	Writer : Ofir Hasson
-*
-*	Reviewed by: 
-*	Reviewed date: 
+
+*	
 */
-
-
 
 #include <stdio.h> /* printf */
 #include <assert.h> /* assert */
@@ -23,14 +20,12 @@
 #define SIZE 5000
 
 typedef void (*sort_func)(int*,size_t);
-typedef int (*search_func)(int* arr, size_t size, int n);
 
 static void TestAlgorithm(sort_func sort_alg , char* name);
-static void TestSearch(search_func search_alg, char* name);
 static void TestMergeSort();
-/*static void TestQuickSort();*/
-/*static void TestQuickSortNoOpt();*/
-/*static void TestQuickSortOpt();*/
+static void TestQuickSort();
+static void TestQuickSortNoOpt();
+static void TestQuickSortOpt();
 
 static void CopyArr(int* dst_arr, int* src_arr, size_t size);
 static void generateRandomArray(int* arr, size_t size);
@@ -50,8 +45,7 @@ int main(void)
 	TestAlgorithm(RadixSort, "RadixSort");
 	
 	TestMergeSort();
-/*	TestQuickSort();*/
-
+	TestQuickSort();
 
 	return (0);
 }
@@ -96,147 +90,101 @@ static void TestMergeSort()
 
 }
 
-/*static void TestQuickSort()*/
-/*{*/
-/*	TestQuickSortNoOpt();*/
-/*	TestQuickSortOpt();*/
-/*}*/
+static void TestQuickSort()
+{
+	TestQuickSortNoOpt();
+	TestQuickSortOpt();
+}
 
 #pragma GCC push_options
 #pragma GCC optimize ("O0")
 
-/*static void TestQuickSortNoOpt()*/
-/*{*/
-/*	int arr[SIZE] = {0};*/
-/*	int arr1[SIZE] = {0};*/
-/*	*/
-/*	clock_t start_t, end_t;*/
-/*   	double total_t;*/
-/*   	*/
-/*   	printf("QuickSort test:\n");*/
-/*   	*/
-/*    srand(time(NULL));*/
-/*    */
-/*	generateRandomArray(arr, SIZE);*/
-/*    */
-/*	CopyArr(arr1,arr,SIZE);*/
-/*	*/
-/*    start_t = clock();*/
-/*	QuickSort(arr, SIZE, sizeof(arr[0]), IntsCmp);*/
-/*	end_t = clock();*/
-/*	*/
-/*	total_t = (double)(end_t - start_t) / CLOCKS_PER_SEC;*/
-/*   	printf("Total time of the QuickSort (No optimization): %f\n", total_t);*/
-/*   	*/
-/*   	start_t = clock();*/
-/*	qsort(arr1, SIZE, sizeof(arr1[0]), IntsCmp);*/
-/*	end_t = clock();*/
-/*	total_t = (double)(end_t - start_t) / CLOCKS_PER_SEC;*/
-/*	printf("Total time of the qsort (No optimization): %f\n", total_t);*/
-/*	*/
-/*	if(0 != memcmp(arr,arr1,SIZE * sizeof(arr1[0])))*/
-/*	{*/
-/*		printf(RED "\n\tQuickSort FAILED!\n\n" UNFORMAT);*/
-/*	}*/
-/*	else*/
-/*	{*/
-/*		printf(GREEN "\n\tQuickSort PASSED!\n\n" UNFORMAT);*/
-/*	}*/
+static void TestQuickSortNoOpt()
+{
+	int arr[SIZE] = {0};
+	int arr1[SIZE] = {0};
+	
+	clock_t start_t, end_t;
+   	double total_t;
+   	
+   	printf("QuickSort test:\n");
+   	
+    srand(time(NULL));
+    
+	generateRandomArray(arr, SIZE);
+    
+	CopyArr(arr1,arr,SIZE);
+	
+    start_t = clock();
+	QuickSort(arr, SIZE, sizeof(arr[0]), IntsCmp);
+	end_t = clock();
+	
+	total_t = (double)(end_t - start_t) / CLOCKS_PER_SEC;
+   	printf("Total time of the QuickSort (No optimization): %f\n", total_t);
+   	
+   	start_t = clock();
+	qsort(arr1, SIZE, sizeof(arr1[0]), IntsCmp);
+	end_t = clock();
+	total_t = (double)(end_t - start_t) / CLOCKS_PER_SEC;
+	printf("Total time of the qsort (No optimization): %f\n", total_t);
+	
+	if(0 != memcmp(arr,arr1,SIZE * sizeof(arr1[0])))
+	{
+		printf(RED "\n\tQuickSort FAILED!\n\n" UNFORMAT);
+	}
+	else
+	{
+		printf(GREEN "\n\tQuickSort PASSED!\n\n" UNFORMAT);
+	}
 
-/*}*/
+}
 
 #pragma GCC pop_options
 
 #pragma GCC push_options
 #pragma GCC optimize ("O3")
 
-/*static void TestQuickSortOpt()*/
-/*{*/
-/*	int arr[SIZE] = {0};*/
-/*	int arr1[SIZE] = {0};*/
-/*	*/
-/*	clock_t start_t, end_t;*/
-/*   	double total_t;*/
-/*   	*/
-/*   	printf("QuickSort test:\n");*/
-/*   	*/
-/*    srand(time(NULL));*/
-/*    */
-/*	generateRandomArray(arr, SIZE);*/
-/*    */
-/*	CopyArr(arr1,arr,SIZE);*/
-/*	*/
-/*    start_t = clock();*/
-/*	QuickSort(arr, SIZE, sizeof(arr[0]), IntsCmp);*/
-/*	end_t = clock();*/
-/*	*/
-/*	total_t = (double)(end_t - start_t) / CLOCKS_PER_SEC;*/
-/*   	printf("Total time of the QuickSort: %f\n", total_t);*/
-/*   	*/
-/*   	start_t = clock();*/
-/*	qsort(arr1, SIZE, sizeof(arr1[0]), IntsCmp);*/
-/*	end_t = clock();*/
-/*	total_t = (double)(end_t - start_t) / CLOCKS_PER_SEC;*/
-/*	printf("Total time of the qsort: %f\n", total_t);*/
-/*	*/
-/*	if(0 != memcmp(arr,arr1,SIZE * sizeof(arr1[0])))*/
-/*	{*/
-/*		printf(RED "\n\tQuickSort FAILED!\n\n" UNFORMAT);*/
-/*	}*/
-/*	else*/
-/*	{*/
-/*		printf(GREEN "\n\tQuickSort PASSED!\n\n" UNFORMAT);*/
-/*	}*/
-
-/*}*/
-
-#pragma GCC pop_options
-
-static void TestSearch(search_func search_alg, char* name)
+static void TestQuickSortOpt()
 {
 	int arr[SIZE] = {0};
-	int first = 0 , last = SIZE-1, middle = SIZE / 2; 
-	int tmp = 1000;
-	int result = 0;
-	size_t i = 0;
+	int arr1[SIZE] = {0};
+	
+	clock_t start_t, end_t;
+   	double total_t;
    	
-   	printf("%s test:\n",name);
+   	printf("QuickSort test:\n");
    	
-    for (i = 0; i < SIZE; ++i) 
-    {
-        arr[i] = i;
-    }
+    srand(time(NULL));
+    
+	generateRandomArray(arr, SIZE);
+    
+	CopyArr(arr1,arr,SIZE);
 	
-	if(first != search_alg(arr,SIZE, arr[first]))
+    start_t = clock();
+	QuickSort(arr, SIZE, sizeof(arr[0]), IntsCmp);
+	end_t = clock();
+	
+	total_t = (double)(end_t - start_t) / CLOCKS_PER_SEC;
+   	printf("Total time of the QuickSort: %f\n", total_t);
+   	
+   	start_t = clock();
+	qsort(arr1, SIZE, sizeof(arr1[0]), IntsCmp);
+	end_t = clock();
+	total_t = (double)(end_t - start_t) / CLOCKS_PER_SEC;
+	printf("Total time of the qsort: %f\n", total_t);
+	
+	if(0 != memcmp(arr,arr1,SIZE * sizeof(arr1[0])))
 	{
-		++result;
-		printf(RED "\n\t%s FAILED! expected result %d, but got %d\n\n" UNFORMAT, name,first,search_alg(arr,SIZE, arr[first]));
+		printf(RED "\n\tQuickSort FAILED!\n\n" UNFORMAT);
 	}
-	
-	if(last != search_alg(arr,SIZE, arr[last]))
+	else
 	{
-		++result;
-		printf(RED "\n\t%s FAILED! expected result %d, but got %d\n\n" UNFORMAT, name,last,search_alg(arr,SIZE, arr[last]));
+		printf(GREEN "\n\tQuickSort PASSED!\n\n" UNFORMAT);
 	}
-	
-	if(middle != search_alg(arr,SIZE, arr[middle]))
-	{
-		++result;
-		printf(RED "\n\t%s FAILED! expected result %d, but got %d\n\n" UNFORMAT, name,middle,search_alg(arr,SIZE, arr[middle]));
-	}
-	
-	if(tmp != search_alg(arr,SIZE, arr[tmp]))
-	{
-		++result;
-		printf(RED "\n\t%s FAILED! expected result %d, but got %d\n\n" UNFORMAT, name,tmp,search_alg(arr,SIZE, arr[tmp]));
-	}
-	
-	if(0 == result)
-	{
-		printf(GREEN "\n\t%s PASSED!\n\n" UNFORMAT, name);
-	}
-	
+
 }
+
+#pragma GCC pop_options
 
 static void TestAlgorithm(sort_func sort_alg , char* name)
 {

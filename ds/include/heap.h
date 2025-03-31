@@ -44,7 +44,7 @@ int HeapPush(heap_t* heap, void* data);
 void HeapPop(heap_t* heap);
 
 /* O(1) */
-void* HeapPeek(const heap_t* tree);
+void* HeapPeek(const heap_t* heap);
 
 /* if found return data. if not found return NULL,  
     O(n) */
